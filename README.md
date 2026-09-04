@@ -97,6 +97,33 @@ Read the project documentation before making product, design, data, or architect
 
 Codex and other coding agents should also read `AGENTS.md` before implementation work.
 
+## Development
+
+Requirements:
+
+- Node.js 24.14.0
+- pnpm 11.25.0 through Corepack
+
+Install dependencies and start the local development server:
+
+```bash
+corepack enable
+pnpm install
+pnpm dev
+```
+
+If the global Corepack shim cannot be enabled, prefix pnpm commands with
+`corepack`, for example `corepack pnpm install`.
+
+Quality checks:
+
+```bash
+pnpm format:check
+pnpm lint
+pnpm typecheck
+pnpm build
+```
+
 ## Project Status
 
-Planning for Version 1 is complete. The next step is **Phase 0 — Project Bootstrap**, following `docs/implementation-plan.md`.
+Phase 0 — Project Bootstrap is complete. The next step is **Phase 1 — Design System & Public Shell**, following `docs/implementation-plan.md`.

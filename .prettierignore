@@ -1,0 +1,10 @@
+.next/
+build/
+coverage/
+node_modules/
+out/
+pnpm-lock.yaml
+
+# Preserve project source-of-truth documentation verbatim.
+AGENTS.md
+docs/
