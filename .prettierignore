@@ -5,6 +5,9 @@ node_modules/
 out/
 pnpm-lock.yaml
 
+# Preserve Drizzle Kit-generated metadata formatting.
+src/db/migrations/meta/
+
 # Preserve project source-of-truth documentation verbatim.
 AGENTS.md
 docs/
