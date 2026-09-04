@@ -126,4 +126,4 @@ pnpm build
 
 ## Project Status
 
-Phase 0 — Project Bootstrap is complete. The next step is **Phase 1 — Design System & Public Shell**, following `docs/implementation-plan.md`.
+Phase 1 — Design System & Public Shell is complete. The next step is **Phase 2 — Database Foundation**, following `docs/implementation-plan.md`.
