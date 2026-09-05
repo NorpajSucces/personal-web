@@ -121,9 +121,41 @@ Quality checks:
 pnpm format:check
 pnpm lint
 pnpm typecheck
+pnpm test:auth
 pnpm build
 ```
 
+### Admin authentication
+
+Copy `.env.example` to `.env.local` and supply the database connection, public
+Supabase URL, public publishable key, and the single administrator's immutable
+Supabase Auth user ID. Keep `.env.local` ignored by Git. Never use a secret or
+service-role key for this integration.
+
+Supabase must already have a confirmed administrator, custom SMTP, and a Magic
+Link email template containing `{{ .Token }}`. The SMTP sender must use a domain
+verified with the mail provider. Disable public signup in Supabase;
+the login flow additionally uses `shouldCreateUser: false`. Visit `/admin/login`
+to request and verify an email code. Supabase handles delivery and rate limits.
+
+For development, Resend's `onboarding@resend.dev` sender can deliver only to the
+email address associated with the Resend account. Use a verified domain before
+production deployment or sending to other recipients.
+
+Authentication uses request-scoped SSR clients and cookie refresh in
+`src/proxy.ts`, scoped to `/admin/*`. Server Components and login verification
+check the current Auth user using `getUser()` and compare its ID to the
+server-only `ADMIN_USER_ID`. Future mutations must call `requireAdmin()` too.
+Admin responses are private and non-cacheable; public pages remain anonymous.
+
+`pnpm test:auth` runs focused tests with Node's built-in test runner, using fake
+identities and an Auth test double. Before merging or deploying, also exercise
+real email delivery, code verification, admin navigation, and logout against
+the configured development project. Admin management pages are placeholders;
+content editing is introduced in subsequent phases.
+
 ## Project Status
 
-Phase 1 — Design System & Public Shell is complete. The next step is **Phase 2 — Database Foundation**, following `docs/implementation-plan.md`.
+Phase 3 — Authentication & Admin Shell is complete. Live OTP login and logout
+have been verified against the development project. Content editing starts with
+**Phase 4 — Home CMS**, following `docs/implementation-plan.md`.
