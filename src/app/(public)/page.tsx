@@ -5,15 +5,10 @@ import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { SurfaceCard } from "@/components/shared/surface-card";
 import { getHomeContent } from "@/features/home/queries";
+import { ProjectGrid } from "@/features/projects/project-card";
+import { getPublicProjects } from "@/features/projects/queries";
 
 const latestSections = [
-  {
-    id: "projects",
-    title: "Latest projects",
-    description: "Recent proof of work and engineering case studies.",
-    action: { href: "/projects", label: "View all projects" },
-    emptyMessage: "Published projects will appear here.",
-  },
   {
     id: "articles",
     title: "Latest articles",
@@ -40,7 +35,10 @@ const latestSections = [
 
 export default async function HomePage() {
   await connection();
-  const content = await getHomeContent();
+  const [content, latestProjects] = await Promise.all([
+    getHomeContent(),
+    getPublicProjects(3),
+  ]);
   const contactLinks = [
     {
       label: content.publicEmail,
@@ -78,6 +76,26 @@ export default async function HomePage() {
               {content.aboutContent}
             </p>
           </div>
+        </Container>
+      </Section>
+
+      <Section id="projects" aria-labelledby="projects-title">
+        <Container>
+          <SectionHeading
+            id="projects-title"
+            title="Latest projects"
+            description="Recent proof of work and engineering case studies."
+            action={{ href: "/projects", label: "View all projects" }}
+          />
+          {latestProjects.length ? (
+            <ProjectGrid projects={latestProjects} />
+          ) : (
+            <SurfaceCard>
+              <p className="text-sm leading-6 text-muted-foreground">
+                Published projects will appear here.
+              </p>
+            </SurfaceCard>
+          )}
         </Container>
       </Section>
 

@@ -17,8 +17,8 @@ export default async function DashboardPage() {
         A place to keep creating.
       </h1>
       <p className="mt-4 max-w-prose leading-relaxed text-muted-foreground">
-        Your publishing space is ready. Content editing will arrive in the
-        upcoming updates.
+        Home and Project content management are ready. Other publishing
+        workspaces will arrive in upcoming phases.
       </p>
       <section aria-labelledby="workspaces-title" className="mt-10">
         <h2 id="workspaces-title" className="mb-4 text-sm font-semibold">
@@ -49,20 +49,25 @@ export default async function DashboardPage() {
           Quick actions
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Creating content is not available yet.
+          Project creation is available. Other content types arrive in later
+          phases.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
-          {["New Article", "New Note", "New Project", "New Learning Entry"].map(
-            (label) => (
-              <button
-                key={label}
-                disabled
-                className="min-h-11 cursor-not-allowed rounded-md border px-4 text-sm text-muted-foreground"
-              >
-                {label}
-              </button>
-            ),
-          )}
+          <Link
+            href="/admin/projects/new"
+            className="inline-flex min-h-11 items-center rounded-md border border-primary/50 px-4 text-sm font-medium text-primary hover:bg-accent"
+          >
+            New Project
+          </Link>
+          {["New Article", "New Note", "New Learning Entry"].map((label) => (
+            <button
+              key={label}
+              disabled
+              className="min-h-11 cursor-not-allowed rounded-md border px-4 text-sm text-muted-foreground"
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </section>
     </>
