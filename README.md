@@ -123,6 +123,7 @@ pnpm lint
 pnpm typecheck
 pnpm test:auth
 pnpm test:home
+pnpm test:projects
 pnpm build
 ```
 
@@ -153,7 +154,8 @@ Admin responses are private and non-cacheable; public pages remain anonymous.
 identities and an Auth test double. Before merging or deploying, also exercise
 real email delivery, code verification, admin navigation, and logout against
 the configured development project. Home content editing is available at
-`/admin/home`; other admin management pages remain placeholders for later phases.
+`/admin/home`, and Project management is available at `/admin/projects`. Other
+admin management pages remain placeholders for later phases.
 
 ### Home CMS development
 
@@ -167,15 +169,29 @@ outages are not treated as an empty record. Other content pages remain placehold
 without connecting to Supabase. It uses Node's experimental module-mocking flag
 only to isolate server dependencies; production code does not use this feature.
 
+### Projects development
+
+`/admin/projects` provides protected create, edit, preview, and delete workflows.
+Projects remain hidden from `/projects`, their public detail route, and the Home
+latest-projects section unless both publication status is `published` and
+visibility is `public`.
+
+Project screenshots and case-study authoring are intentionally deferred until
+the shared Supabase Storage and rich-text foundations are introduced. Existing
+database values for those fields are preserved during edits. `pnpm test:projects`
+runs focused schema, query-boundary, authorization, and Server Action tests
+without connecting to Supabase.
+
 ## Project Status
 
-Phase 4 — Home CMS is complete and merged into `main`.
+Phase 5 — Projects is complete on `feat/projects` and ready for review and merge.
 
-Hero, About, and Contact content can be edited through the protected admin form
-and rendered on the public Home. The owner confirmed manual testing with real
-Email OTP, saving, persistence, and public rendering against the development
-project. Automated tests and quality checks also passed.
+The protected admin supports project creation, editing, preview, and deletion.
+Only published and public projects render on the public list, detail pages, and
+Home. The feature was exercised end to end against the development database,
+including visibility boundaries, slug changes, responsive layouts, and cleanup
+of temporary test records.
 
-Next: **Phase 5 — Projects**, following `docs/implementation-plan.md`.
-Other content systems and the Contact submission flow remain out of scope until
-their respective phases.
+Next: **Phase 6 — Articles**, following `docs/implementation-plan.md`. Screenshot
+uploads, case-study authoring, other content systems, and the Contact submission
+flow remain out of scope until their respective phases.

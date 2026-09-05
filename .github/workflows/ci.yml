@@ -44,6 +44,7 @@ jobs:
         run: |
           pnpm test:auth
           pnpm test:home
+          pnpm test:projects
 
       - name: Build
         run: pnpm build
