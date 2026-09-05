@@ -152,8 +152,8 @@ Admin responses are private and non-cacheable; public pages remain anonymous.
 `pnpm test:auth` runs focused tests with Node's built-in test runner, using fake
 identities and an Auth test double. Before merging or deploying, also exercise
 real email delivery, code verification, admin navigation, and logout against
-the configured development project. Admin management pages are placeholders;
-content editing is introduced in subsequent phases.
+the configured development project. Home content editing is available at
+`/admin/home`; other admin management pages remain placeholders for later phases.
 
 ### Home CMS development
 
@@ -169,6 +169,13 @@ only to isolate server dependencies; production code does not use this feature.
 
 ## Project Status
 
-Phase 3 — Authentication & Admin Shell is complete. Live OTP login and logout
-have been verified against the development project. Content editing starts with
-**Phase 4 — Home CMS**, following `docs/implementation-plan.md`.
+Phase 4 — Home CMS is complete and merged into `main`.
+
+Hero, About, and Contact content can be edited through the protected admin form
+and rendered on the public Home. The owner confirmed manual testing with real
+Email OTP, saving, persistence, and public rendering against the development
+project. Automated tests and quality checks also passed.
+
+Next: **Phase 5 — Projects**, following `docs/implementation-plan.md`.
+Other content systems and the Contact submission flow remain out of scope until
+their respective phases.
