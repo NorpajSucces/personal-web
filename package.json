@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test:auth": "node --test tests/auth.test.mjs",
+    "test:home": "node --experimental-test-module-mocks --test tests/home*.test.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

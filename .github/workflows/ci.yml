@@ -40,5 +40,10 @@ jobs:
       - name: Type-check
         run: pnpm typecheck
 
+      - name: Test authentication and Home CMS
+        run: |
+          pnpm test:auth
+          pnpm test:home
+
       - name: Build
         run: pnpm build

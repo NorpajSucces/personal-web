@@ -1,7 +1,10 @@
+import { connection } from "next/server";
+
 import { Container } from "@/components/shared/container";
 import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { SurfaceCard } from "@/components/shared/surface-card";
+import { getHomeContent } from "@/features/home/queries";
 
 const latestSections = [
   {
@@ -35,7 +38,17 @@ const latestSections = [
   },
 ] as const;
 
-export default function HomePage() {
+export default async function HomePage() {
+  await connection();
+  const content = await getHomeContent();
+  const contactLinks = [
+    {
+      label: content.publicEmail,
+      href: content.publicEmail ? `mailto:${content.publicEmail}` : "",
+    },
+    { label: "GitHub", href: content.githubUrl },
+    { label: "LinkedIn", href: content.linkedinUrl },
+  ].filter((link) => link.href);
   return (
     <>
       <section aria-labelledby="hero-title">
@@ -46,13 +59,12 @@ export default function HomePage() {
             </p>
             <h1
               id="hero-title"
-              className="font-serif text-[clamp(3.5rem,10vw,7rem)] leading-[0.9] font-medium tracking-[-0.05em] text-balance"
+              className="font-serif text-[clamp(3.5rem,10vw,7rem)] leading-[0.9] font-medium tracking-[-0.05em] wrap-anywhere whitespace-pre-line text-balance"
             >
-              Hi, I’m Zhafran.
+              {content.heroTitle}
             </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-muted-foreground text-pretty sm:text-xl">
-              This is where I document what I build, what I learn, and how my
-              thinking evolves.
+            <p className="mt-7 max-w-2xl text-lg leading-8 wrap-anywhere whitespace-pre-line text-muted-foreground text-pretty sm:text-xl">
+              {content.heroDescription}
             </p>
           </div>
         </Container>
@@ -60,11 +72,10 @@ export default function HomePage() {
 
       <Section id="about" aria-labelledby="about-title">
         <Container>
-          <div className="max-w-[var(--container-reading)]">
-            <SectionHeading id="about-title" title="About" />
+          <div className="max-w-[var(--container-reading)] wrap-anywhere whitespace-pre-line">
+            <SectionHeading id="about-title" title={content.aboutTitle} />
             <p className="font-serif text-xl leading-9 text-foreground text-pretty sm:text-2xl sm:leading-10">
-              This site brings projects, long-form writing, shorter notes, and a
-              chronological learning journey into one evolving place.
+              {content.aboutContent}
             </p>
           </div>
         </Container>
@@ -94,16 +105,31 @@ export default function HomePage() {
 
       <Section id="contact" aria-labelledby="contact-title">
         <Container>
-          <div className="max-w-[var(--container-reading)]">
+          <div className="max-w-[var(--container-reading)] wrap-anywhere whitespace-pre-line">
             <SectionHeading
               id="contact-title"
-              title="Contact"
-              description="A direct way to start a conversation."
+              title={content.contactTitle}
+              description={content.contactDescription}
             />
-            <p className="text-base leading-7 text-muted-foreground text-pretty">
-              Contact details and the message form will be added when the
-              contact flow is implemented.
-            </p>
+            {contactLinks.length ? (
+              <ul className="flex flex-wrap gap-x-6 gap-y-2">
+                {contactLinks.map((link) => (
+                  <li key={link.href} className="min-w-0">
+                    <a
+                      href={link.href}
+                      className="inline-block rounded-sm py-2 text-primary underline underline-offset-4 hover:text-foreground"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-base leading-7 text-muted-foreground text-pretty">
+                Contact details and the message form will be added when the
+                contact flow is implemented.
+              </p>
+            )}
           </div>
         </Container>
       </Section>
