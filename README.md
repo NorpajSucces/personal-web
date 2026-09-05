@@ -122,6 +122,7 @@ pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test:auth
+pnpm test:home
 pnpm build
 ```
 
@@ -153,6 +154,18 @@ identities and an Auth test double. Before merging or deploying, also exercise
 real email delivery, code verification, admin navigation, and logout against
 the configured development project. Admin management pages are placeholders;
 content editing is introduced in subsequent phases.
+
+### Home CMS development
+
+`/admin/home` edits the singleton Home record using the existing database and
+admin environment variables. Before the first save, both pages use the original
+Home copy. Saves are immediately public; this configuration has no draft state.
+The public Home reads PostgreSQL at request time, not during the build. Database
+outages are not treated as an empty record. Other content pages remain placeholders.
+
+`pnpm test:home` runs validation, mapping, singleton SQL, and Server Action tests
+without connecting to Supabase. It uses Node's experimental module-mocking flag
+only to isolate server dependencies; production code does not use this feature.
 
 ## Project Status
 
