@@ -77,6 +77,8 @@ Guidelines:
 - Strong section rhythm
 - Avoid excessively wide text columns
 - Reading surfaces should remain comfortable for Articles and Notes
+- On Home, keep the Hero wide and expressive, then center a noticeably narrower
+  profile column with left-aligned text for every following section
 
 ## 6. Cards
 
@@ -139,20 +141,20 @@ Hero
 
 About
 
+Experience
+
+Tech & Tools
+
 Latest Projects
 → View all projects
 
-Latest Articles
-→ View all articles
-
-Latest Notes
-→ View all notes
-
-Latest Learning
-→ View learning journey
-
 Contact
+
+Footer
 ```
+
+Experience, Tech & Tools, and Home Projects should favor typography, spacing,
+and subtle dividers over large cards or decorative timeline graphics.
 
 ## 10. Public vs Admin UI
 

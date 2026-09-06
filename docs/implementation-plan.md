@@ -220,7 +220,6 @@ Article admin:
 
 Public:
 
-- Latest Articles on Home
 - `/articles`
 - Topics filtering
 - Tags filtering
@@ -255,7 +254,6 @@ Admin fields:
 
 Public:
 
-- Latest Notes on Home
 - `/notes`
 - Topics filtering
 - Tags filtering
@@ -287,13 +285,38 @@ Admin:
 
 Public:
 
-- Latest Learning preview on Home
 - `/learning`
 - Chronological grouping
 - Topic/domain filtering
 - Related-content links
 
 No Learning detail page in V1.
+
+---
+
+# Phase 8.5 — Home Redesign + Experience CMS
+
+Goal: refine Home into a focused personal profile while preserving the existing
+warm editorial identity.
+
+Tasks:
+
+- Keep an expressive, CMS-backed Hero
+- Use a narrower centered column after Hero with left-aligned content
+- Keep CMS-backed About and Contact content
+- Add dedicated Experience schema and protected CRUD under `/admin/home`
+- Order Experience automatically by newest start date
+- Keep Tech & Tools in one code-owned configuration
+- Keep only the newest published and public Projects preview on Home
+- Remove Article, Note, and Learning previews from Home without changing their routes
+- Add a restrained footer
+
+Exit criteria:
+
+- Home follows Hero → About → Experience → Tech & Tools → Latest Projects → Contact → Footer
+- Experience create, edit, delete, validation, and public rendering work
+- Current Experience entries have no end date and render `Present`
+- Existing Home fields and dedicated public content routes remain functional
 
 ---
 

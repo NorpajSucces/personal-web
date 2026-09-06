@@ -3,27 +3,20 @@ import { connection } from "next/server";
 import { Container } from "@/components/shared/container";
 import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
-import { SurfaceCard } from "@/components/shared/surface-card";
-import { ArticleGrid } from "@/features/articles/article-card";
-import { getPublicArticles } from "@/features/articles/queries";
+import { ExperienceList } from "@/features/home/experience-list";
+import { getExperiences } from "@/features/home/experience-queries";
+import { HomeProjectList } from "@/features/home/home-project-list";
 import { getHomeContent } from "@/features/home/queries";
-import { LearningTimeline } from "@/features/learning/learning-timeline";
-import { getPublicLearningEntries } from "@/features/learning/queries";
-import { NoteGrid } from "@/features/notes/note-card";
-import { getPublicNotes } from "@/features/notes/queries";
-import { ProjectGrid } from "@/features/projects/project-card";
+import { techToolGroups } from "@/features/home/tech-tools";
 import { getPublicProjects } from "@/features/projects/queries";
 
 export default async function HomePage() {
   await connection();
-  const [content, latestProjects, latestArticles, latestNotes, latestLearning] =
-    await Promise.all([
-      getHomeContent(),
-      getPublicProjects(3),
-      getPublicArticles({ limit: 3 }),
-      getPublicNotes({ limit: 3 }),
-      getPublicLearningEntries({ limit: 3 }),
-    ]);
+  const [content, experiences, latestProjects] = await Promise.all([
+    getHomeContent(),
+    getExperiences(),
+    getPublicProjects(3),
+  ]);
   const contactLinks = [
     {
       label: content.publicEmail,
@@ -54,18 +47,58 @@ export default async function HomePage() {
       </section>
 
       <Section id="about" aria-labelledby="about-title">
-        <Container>
-          <div className="max-w-[var(--container-reading)] wrap-anywhere whitespace-pre-line">
-            <SectionHeading id="about-title" title={content.aboutTitle} />
-            <p className="font-serif text-xl leading-9 text-foreground text-pretty sm:text-2xl sm:leading-10">
-              {content.aboutContent}
+        <Container size="home">
+          <SectionHeading id="about-title" title={content.aboutTitle} />
+          <p className="whitespace-pre-line font-serif text-xl leading-9 wrap-anywhere text-foreground text-pretty sm:text-2xl sm:leading-10">
+            {content.aboutContent}
+          </p>
+        </Container>
+      </Section>
+
+      <Section id="experience" aria-labelledby="experience-title">
+        <Container size="home">
+          <SectionHeading
+            id="experience-title"
+            title="Experience"
+            description="Roles and collaborations that have shaped how I work."
+          />
+          {experiences.length ? (
+            <ExperienceList experiences={experiences} />
+          ) : (
+            <p className="border-y py-7 text-sm leading-6 text-muted-foreground">
+              Experience will be added here.
             </p>
-          </div>
+          )}
+        </Container>
+      </Section>
+
+      <Section id="tech" aria-labelledby="tech-title">
+        <Container size="home">
+          <SectionHeading
+            id="tech-title"
+            title="Tech & tools"
+            description="Tools I use and have worked with."
+          />
+          <dl className="border-y">
+            {techToolGroups.map((group) => (
+              <div
+                key={group.label}
+                className="grid gap-3 border-b py-5 last:border-b-0 sm:grid-cols-[9rem_1fr] sm:gap-6"
+              >
+                <dt className="text-sm font-semibold text-primary">
+                  {group.label}
+                </dt>
+                <dd className="text-sm leading-7 wrap-anywhere text-muted-foreground">
+                  {group.items.join(" / ")}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </Container>
       </Section>
 
       <Section id="projects" aria-labelledby="projects-title">
-        <Container>
+        <Container size="home">
           <SectionHeading
             id="projects-title"
             title="Latest projects"
@@ -73,107 +106,51 @@ export default async function HomePage() {
             action={{ href: "/projects", label: "View all projects" }}
           />
           {latestProjects.length ? (
-            <ProjectGrid projects={latestProjects} />
+            <HomeProjectList projects={latestProjects} />
           ) : (
-            <SurfaceCard>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Published projects will appear here.
-              </p>
-            </SurfaceCard>
-          )}
-        </Container>
-      </Section>
-
-      <Section id="articles" aria-labelledby="articles-title">
-        <Container>
-          <SectionHeading
-            id="articles-title"
-            title="Latest articles"
-            description="Developed, long-form writing across technical and personal subjects."
-            action={{ href: "/articles", label: "View all articles" }}
-          />
-          {latestArticles.length ? (
-            <ArticleGrid articles={latestArticles} />
-          ) : (
-            <SurfaceCard>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Published articles will appear here.
-              </p>
-            </SurfaceCard>
-          )}
-        </Container>
-      </Section>
-
-      <Section id="notes" aria-labelledby="notes-title">
-        <Container>
-          <SectionHeading
-            id="notes-title"
-            title="Latest notes"
-            description="Shorter observations, references, reflections, and evolving thoughts."
-            action={{ href: "/notes", label: "View all notes" }}
-          />
-          {latestNotes.length ? (
-            <NoteGrid notes={latestNotes} />
-          ) : (
-            <SurfaceCard>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Published notes will appear here.
-              </p>
-            </SurfaceCard>
-          )}
-        </Container>
-      </Section>
-
-      <Section id="learning" aria-labelledby="learning-title">
-        <Container>
-          <SectionHeading
-            id="learning-title"
-            title="Latest learning"
-            description="A chronological record of exploration and practice."
-            action={{ href: "/learning", label: "View learning journey" }}
-          />
-          {latestLearning.length ? (
-            <LearningTimeline entries={latestLearning} groupByYear={false} />
-          ) : (
-            <SurfaceCard>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Published Learning entries will appear here.
-              </p>
-            </SurfaceCard>
+            <p className="border-y py-7 text-sm leading-6 text-muted-foreground">
+              Published projects will appear here.
+            </p>
           )}
         </Container>
       </Section>
 
       <Section id="contact" aria-labelledby="contact-title">
-        <Container>
-          <div className="max-w-[var(--container-reading)] wrap-anywhere whitespace-pre-line">
-            <SectionHeading
-              id="contact-title"
-              title={content.contactTitle}
-              description={content.contactDescription}
-            />
-            {contactLinks.length ? (
-              <ul className="flex flex-wrap gap-x-6 gap-y-2">
-                {contactLinks.map((link) => (
-                  <li key={link.href} className="min-w-0">
-                    <a
-                      href={link.href}
-                      className="inline-block rounded-sm py-2 text-primary underline underline-offset-4 hover:text-foreground"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-base leading-7 text-muted-foreground text-pretty">
-                Contact details and the message form will be added when the
-                contact flow is implemented.
-              </p>
-            )}
-          </div>
+        <Container size="home">
+          <SectionHeading
+            id="contact-title"
+            title={content.contactTitle}
+            description={content.contactDescription}
+          />
+          {contactLinks.length ? (
+            <ul className="flex flex-wrap gap-x-6 gap-y-2">
+              {contactLinks.map((link) => (
+                <li key={link.href} className="min-w-0">
+                  <a
+                    href={link.href}
+                    className="inline-block rounded-sm py-2 wrap-anywhere text-primary underline underline-offset-4 hover:text-foreground"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-base leading-7 text-muted-foreground text-pretty">
+              Contact details and the message form will be added when the
+              contact flow is implemented.
+            </p>
+          )}
         </Container>
       </Section>
+
+      <footer className="border-t border-border/70 py-8">
+        <Container size="home">
+          <p className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} Zhafran
+          </p>
+        </Container>
+      </footer>
     </>
   );
 }

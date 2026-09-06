@@ -112,11 +112,14 @@ Contains:
 
 - Hero / Introduction
 - About
+- Experience
+- Tech & Tools
 - Latest Projects
-- Latest Articles
-- Latest Notes
-- Latest Learning
 - Contact
+- Footer
+
+The Hero may remain expressive and wide. The sections after it use a narrower,
+centered content column while keeping text left-aligned.
 
 ### Projects
 
@@ -253,6 +256,7 @@ Admin exists to manage content, not analytics.
 Admin should manage:
 
 - Home content
+- Experience
 - Projects
 - Articles
 - Notes
@@ -276,14 +280,16 @@ No visitor analytics dashboard is required in V1.
 
 ## 13. Home Content Behavior
 
-Projects, Articles, Notes, and Learning previews on Home are selected automatically based on newest relevant public content.
+Latest Projects on Home are selected automatically from the newest published
+and public Projects. Experience entries are ordered automatically by newest
+start date. Tech & Tools remains a small code-owned list rather than CMS data.
 
 There is no manual featured-content management in V1.
 
 ## 14. Product Principles
 
 - Every page must earn its existence.
-- Home previews everything but does not replace every page.
+- Home provides a focused personal overview without replacing dedicated content pages.
 - Show evidence, not self-rating.
 - Professional enough to represent me, personal enough to actually be mine.
 - Document knowledge as it grows.
