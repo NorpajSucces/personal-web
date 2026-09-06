@@ -125,6 +125,7 @@ pnpm test:auth
 pnpm test:home
 pnpm test:projects
 pnpm test:articles
+pnpm test:notes
 pnpm test
 pnpm build
 ```
@@ -157,9 +158,9 @@ identities and an Auth test double. Before merging or deploying, also exercise
 real email delivery, code verification, admin navigation, and logout against
 the configured development project. Home content editing is available at
 `/admin/home`, Project management is available at `/admin/projects`, Article
-publishing is available at `/admin/articles`, and shared Topics and Tags are
-managed at `/admin/taxonomy`. Notes and Learning remain placeholders for later
-phases.
+publishing is available at `/admin/articles`, Note publishing is available at
+`/admin/notes`, and shared Topics and Tags are managed at `/admin/taxonomy`.
+Learning remains a placeholder for a later phase.
 
 ### Home CMS development
 
@@ -167,8 +168,8 @@ phases.
 admin environment variables. Before the first save, both pages use the original
 Home copy. Saves are immediately public; this configuration has no draft state.
 The public Home reads PostgreSQL at request time, not during the build. Database
-outages are not treated as an empty record. Latest published and public Projects
-and Articles are included; Notes and Learning remain placeholders.
+outages are not treated as an empty record. Latest published and public Projects,
+Articles, and Notes are included; Learning remains a placeholder.
 
 `pnpm test:home` runs validation, mapping, singleton SQL, and Server Action tests
 without connecting to Supabase. It uses Node's experimental module-mocking flag
@@ -205,15 +206,31 @@ deferred; an existing cover-image path is preserved during edits.
 timestamps, public query boundaries, authorization, mutations, and taxonomy
 relationships. `pnpm test` runs all current project suites.
 
+### Notes development
+
+`/admin/notes` provides protected create, edit, preview, and delete workflows for
+shorter or evolving writing. Notes reuse the shared Tiptap editor, safe JSON
+renderer, Topics, Tags, slug rules, and first-publication timestamp behavior.
+They remain a distinct content type rather than being categorized by a dedicated
+Note type enum.
+
+Notes appear on `/notes`, their public detail route, Topic/Tag filtered views,
+and Home only when publication status is `published` and visibility is `public`.
+Deleting a Note removes its junction rows while preserving shared Topics and
+Tags. Image upload remains deferred and existing cover-image paths are preserved.
+
+`pnpm test:notes` covers validation, slug behavior, canonical rich text,
+authorization, mutations, public query boundaries, and shared taxonomy
+relationships.
+
 ## Project Status
 
-Phase 6 — Articles + Tiptap is complete on `feat/articles` and ready for review.
+Phase 7 — Notes is complete on `feat/notes` and ready for review.
 
-The protected admin supports Article creation, editing, preview, deletion, and
-shared Topic/Tag management. Only published and public Articles render on the
-public list, detail pages, filtered views, and Home. Canonical rich content uses
-Tiptap JSON with a shared editor contract and safe public renderer.
+The protected admin supports Note creation, editing, preview, and deletion with
+the shared rich-text and taxonomy foundations. Only published and public Notes
+render on the public list, detail pages, filtered views, and Home.
 
-Next: **Phase 7 — Notes**, following `docs/implementation-plan.md`. Media upload,
-Project case-study authoring, Learning, and the Contact submission flow remain
-out of scope until their respective phases.
+Next: **Phase 8 — Learning**, following `docs/implementation-plan.md`. Media
+upload, Project case-study authoring, and the Contact submission flow remain out
+of scope until their respective phases.

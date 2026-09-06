@@ -10,15 +10,15 @@ import {
 import { RichTextEditor } from "@/features/rich-text/editor";
 import { TaxonomyPicker } from "@/features/taxonomy/taxonomy-picker";
 
-import { generateArticleSlug } from "./slug";
 import {
-  initialArticleFormState,
-  type ArticleFormField,
-  type ArticleFormState,
+  initialNoteFormState,
+  type NoteFormField,
+  type NoteFormState,
 } from "./schema";
+import { generateNoteSlug } from "./slug";
 import type { TaxonomyOption } from "./types";
 
-export type ArticleFormInitialValues = {
+export type NoteFormInitialValues = {
   title: string;
   slug: string;
   excerpt: string;
@@ -30,12 +30,9 @@ export type ArticleFormInitialValues = {
   publishedAt: string | null;
 };
 
-type ArticleFormProps = {
-  action: (
-    state: ArticleFormState,
-    formData: FormData,
-  ) => Promise<ArticleFormState>;
-  initialValues: ArticleFormInitialValues;
+type NoteFormProps = {
+  action: (state: NoteFormState, formData: FormData) => Promise<NoteFormState>;
+  initialValues: NoteFormInitialValues;
   initialTopics: TaxonomyOption[];
   initialTags: TaxonomyOption[];
   mode: "create" | "edit";
@@ -45,7 +42,7 @@ type ArticleFormProps = {
 const inputClassName =
   "block min-h-11 w-full min-w-0 rounded-md border border-input bg-background px-3 py-2 text-base leading-7 aria-invalid:border-destructive";
 
-export const newArticleValues: ArticleFormInitialValues = {
+export const newNoteValues: NoteFormInitialValues = {
   title: "",
   slug: "",
   excerpt: "",
@@ -61,7 +58,7 @@ function FieldError({
   field,
   error,
 }: {
-  field: ArticleFormField;
+  field: NoteFormField;
   error?: string;
 }) {
   return error ? (
@@ -71,21 +68,21 @@ function FieldError({
   ) : null;
 }
 
-export function ArticleForm({
+export function NoteForm({
   action,
   initialValues,
   initialTopics,
   initialTags,
   mode,
   hasCoverImage = false,
-}: ArticleFormProps) {
+}: NoteFormProps) {
   const [values, setValues] = useState(initialValues);
   const [topics, setTopics] = useState(initialTopics);
   const [tags, setTags] = useState(initialTags);
   const [slugWasEdited, setSlugWasEdited] = useState(mode === "edit");
   const [state, formAction, pending] = useActionState(
     action,
-    initialArticleFormState,
+    initialNoteFormState,
   );
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -104,7 +101,7 @@ export function ArticleForm({
     setValues((current) => ({ ...current, [field]: value }));
   }
 
-  function errorProps(field: ArticleFormField) {
+  function errorProps(field: NoteFormField) {
     const errors = state.errors?.[field];
     return {
       "aria-invalid": Boolean(errors?.length),
@@ -124,7 +121,7 @@ export function ArticleForm({
         disabled={pending}
         className="min-w-0 space-y-6 rounded-lg border bg-card p-5 disabled:opacity-75 sm:p-6"
       >
-        <legend className="px-2 font-serif text-2xl">Article details</legend>
+        <legend className="px-2 font-serif text-2xl">Note details</legend>
         <div className="space-y-2">
           <label htmlFor="title" className="block text-sm font-medium">
             Title
@@ -144,7 +141,7 @@ export function ArticleForm({
                 title,
                 slug:
                   mode === "create" && !slugWasEdited
-                    ? generateArticleSlug(title)
+                    ? generateNoteSlug(title)
                     : current.slug,
               }));
             }}
@@ -170,7 +167,7 @@ export function ArticleForm({
             }}
           />
           <p className="text-sm text-muted-foreground">
-            Public URL: /articles/{values.slug || "your-article"}
+            Public URL: /notes/{values.slug || "your-note"}
           </p>
           <FieldError field="slug" error={state.errors?.slug?.[0]} />
         </div>
@@ -184,7 +181,7 @@ export function ArticleForm({
             name="excerpt"
             value={values.excerpt}
             required
-            rows={4}
+            rows={3}
             className={inputClassName}
             onChange={(event) => updateValue("excerpt", event.target.value)}
           />
@@ -219,8 +216,8 @@ export function ArticleForm({
       >
         <legend className="px-2 font-serif text-2xl">Topics and tags</legend>
         <p className="text-sm leading-6 text-muted-foreground">
-          Topics are broad themes; Tags are specific labels. New shared items
-          can be created here and reused by Notes.
+          Classify this Note with shared Topics and Tags. Subject does not
+          determine whether something is a Note.
         </p>
         <TaxonomyPicker
           kind="topic"
@@ -248,7 +245,7 @@ export function ArticleForm({
       >
         <legend className="px-2 font-serif text-2xl">Publishing</legend>
         <p className="text-sm leading-6 text-muted-foreground">
-          An Article appears publicly only when it is both Published and Public.
+          A Note appears publicly only when it is both Published and Public.
         </p>
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2">
@@ -297,7 +294,7 @@ export function ArticleForm({
             <dd className="mt-1 text-muted-foreground">
               {values.publishedAt
                 ? `First published ${values.publishedAt}. This date is preserved.`
-                : "Set automatically the first time this Article is published."}
+                : "Set automatically the first time this Note is published."}
             </dd>
           </div>
           <div>
@@ -320,11 +317,11 @@ export function ArticleForm({
           {pending
             ? "Saving…"
             : mode === "create"
-              ? "Create Article"
-              : "Save Article"}
+              ? "Create Note"
+              : "Save Note"}
         </button>
         <Link
-          href="/admin/articles"
+          href="/admin/notes"
           className="inline-flex min-h-11 items-center rounded-md px-3 text-sm text-muted-foreground hover:text-foreground"
         >
           Cancel
@@ -334,7 +331,7 @@ export function ArticleForm({
           aria-live="polite"
           className="text-sm text-muted-foreground"
         >
-          {pending ? "Saving your Article…" : state.message}
+          {pending ? "Saving your Note…" : state.message}
         </p>
       </div>
     </form>

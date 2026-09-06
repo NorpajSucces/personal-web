@@ -7,17 +7,12 @@ import { SurfaceCard } from "@/components/shared/surface-card";
 import { ArticleGrid } from "@/features/articles/article-card";
 import { getPublicArticles } from "@/features/articles/queries";
 import { getHomeContent } from "@/features/home/queries";
+import { NoteGrid } from "@/features/notes/note-card";
+import { getPublicNotes } from "@/features/notes/queries";
 import { ProjectGrid } from "@/features/projects/project-card";
 import { getPublicProjects } from "@/features/projects/queries";
 
 const latestSections = [
-  {
-    id: "notes",
-    title: "Latest notes",
-    description: "Shorter observations, references, and evolving thoughts.",
-    action: { href: "/notes", label: "View all notes" },
-    emptyMessage: "Published notes will appear here.",
-  },
   {
     id: "learning",
     title: "Latest learning",
@@ -29,11 +24,13 @@ const latestSections = [
 
 export default async function HomePage() {
   await connection();
-  const [content, latestProjects, latestArticles] = await Promise.all([
-    getHomeContent(),
-    getPublicProjects(3),
-    getPublicArticles({ limit: 3 }),
-  ]);
+  const [content, latestProjects, latestArticles, latestNotes] =
+    await Promise.all([
+      getHomeContent(),
+      getPublicProjects(3),
+      getPublicArticles({ limit: 3 }),
+      getPublicNotes({ limit: 3 }),
+    ]);
   const contactLinks = [
     {
       label: content.publicEmail,
@@ -108,6 +105,26 @@ export default async function HomePage() {
             <SurfaceCard>
               <p className="text-sm leading-6 text-muted-foreground">
                 Published articles will appear here.
+              </p>
+            </SurfaceCard>
+          )}
+        </Container>
+      </Section>
+
+      <Section id="notes" aria-labelledby="notes-title">
+        <Container>
+          <SectionHeading
+            id="notes-title"
+            title="Latest notes"
+            description="Shorter observations, references, reflections, and evolving thoughts."
+            action={{ href: "/notes", label: "View all notes" }}
+          />
+          {latestNotes.length ? (
+            <NoteGrid notes={latestNotes} />
+          ) : (
+            <SurfaceCard>
+              <p className="text-sm leading-6 text-muted-foreground">
+                Published notes will appear here.
               </p>
             </SurfaceCard>
           )}

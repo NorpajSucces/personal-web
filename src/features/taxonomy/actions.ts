@@ -27,7 +27,9 @@ function isUniqueViolation(error: unknown): boolean {
 function revalidateTaxonomySurfaces() {
   revalidatePath("/");
   revalidatePath("/articles");
+  revalidatePath("/notes");
   revalidatePath("/admin/articles");
+  revalidatePath("/admin/notes");
   revalidatePath("/admin/taxonomy");
 }
 
