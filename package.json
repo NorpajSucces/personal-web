@@ -14,7 +14,8 @@
     "test:projects": "node --experimental-test-module-mocks --test tests/projects*.test.mjs",
     "test:articles": "node --experimental-test-module-mocks --test tests/articles*.test.mjs",
     "test:notes": "node --experimental-test-module-mocks --test tests/notes*.test.mjs",
-    "test": "corepack pnpm test:auth && corepack pnpm test:home && corepack pnpm test:projects && corepack pnpm test:articles && corepack pnpm test:notes",
+    "test:learning": "node --experimental-test-module-mocks --test tests/learning*.test.mjs",
+    "test": "corepack pnpm test:auth && corepack pnpm test:home && corepack pnpm test:projects && corepack pnpm test:articles && corepack pnpm test:notes && corepack pnpm test:learning",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

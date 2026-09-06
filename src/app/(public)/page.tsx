@@ -7,29 +7,22 @@ import { SurfaceCard } from "@/components/shared/surface-card";
 import { ArticleGrid } from "@/features/articles/article-card";
 import { getPublicArticles } from "@/features/articles/queries";
 import { getHomeContent } from "@/features/home/queries";
+import { LearningTimeline } from "@/features/learning/learning-timeline";
+import { getPublicLearningEntries } from "@/features/learning/queries";
 import { NoteGrid } from "@/features/notes/note-card";
 import { getPublicNotes } from "@/features/notes/queries";
 import { ProjectGrid } from "@/features/projects/project-card";
 import { getPublicProjects } from "@/features/projects/queries";
 
-const latestSections = [
-  {
-    id: "learning",
-    title: "Latest learning",
-    description: "A chronological record of exploration and practice.",
-    action: { href: "/learning", label: "View learning journey" },
-    emptyMessage: "Learning entries will appear here.",
-  },
-] as const;
-
 export default async function HomePage() {
   await connection();
-  const [content, latestProjects, latestArticles, latestNotes] =
+  const [content, latestProjects, latestArticles, latestNotes, latestLearning] =
     await Promise.all([
       getHomeContent(),
       getPublicProjects(3),
       getPublicArticles({ limit: 3 }),
       getPublicNotes({ limit: 3 }),
+      getPublicLearningEntries({ limit: 3 }),
     ]);
   const contactLinks = [
     {
@@ -131,27 +124,25 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      {latestSections.map((section) => (
-        <Section
-          id={section.id}
-          aria-labelledby={`${section.id}-title`}
-          key={section.id}
-        >
-          <Container>
-            <SectionHeading
-              id={`${section.id}-title`}
-              title={section.title}
-              description={section.description}
-              action={section.action}
-            />
+      <Section id="learning" aria-labelledby="learning-title">
+        <Container>
+          <SectionHeading
+            id="learning-title"
+            title="Latest learning"
+            description="A chronological record of exploration and practice."
+            action={{ href: "/learning", label: "View learning journey" }}
+          />
+          {latestLearning.length ? (
+            <LearningTimeline entries={latestLearning} groupByYear={false} />
+          ) : (
             <SurfaceCard>
               <p className="text-sm leading-6 text-muted-foreground">
-                {section.emptyMessage}
+                Published Learning entries will appear here.
               </p>
             </SurfaceCard>
-          </Container>
-        </Section>
-      ))}
+          )}
+        </Container>
+      </Section>
 
       <Section id="contact" aria-labelledby="contact-title">
         <Container>

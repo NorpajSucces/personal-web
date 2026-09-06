@@ -126,6 +126,7 @@ pnpm test:home
 pnpm test:projects
 pnpm test:articles
 pnpm test:notes
+pnpm test:learning
 pnpm test
 pnpm build
 ```
@@ -159,8 +160,8 @@ real email delivery, code verification, admin navigation, and logout against
 the configured development project. Home content editing is available at
 `/admin/home`, Project management is available at `/admin/projects`, Article
 publishing is available at `/admin/articles`, Note publishing is available at
-`/admin/notes`, and shared Topics and Tags are managed at `/admin/taxonomy`.
-Learning remains a placeholder for a later phase.
+`/admin/notes`, Learning management is available at `/admin/learning`, and
+shared Topics and Tags are managed at `/admin/taxonomy`.
 
 ### Home CMS development
 
@@ -169,7 +170,7 @@ admin environment variables. Before the first save, both pages use the original
 Home copy. Saves are immediately public; this configuration has no draft state.
 The public Home reads PostgreSQL at request time, not during the build. Database
 outages are not treated as an empty record. Latest published and public Projects,
-Articles, and Notes are included; Learning remains a placeholder.
+Articles, Notes, and Learning entries are included automatically.
 
 `pnpm test:home` runs validation, mapping, singleton SQL, and Server Action tests
 without connecting to Supabase. It uses Node's experimental module-mocking flag
@@ -223,14 +224,33 @@ Tags. Image upload remains deferred and existing cover-image paths are preserved
 authorization, mutations, public query boundaries, and shared taxonomy
 relationships.
 
+### Learning development
+
+`/admin/learning` provides protected create, edit, preview, and delete workflows
+for chronological Learning entries. Entries use a concise plain-text
+description, the Exploring/Learning/Practicing stages, shared Topics, and
+optional relationships to Articles, Notes, and Projects. Learning does not use
+Tags, slugs, rich text, skill percentages, or a public detail route.
+
+Learning entries appear on `/learning`, Topic-filtered timeline views, and Home
+only when publication status is `published` and visibility is `public`. Related
+content is independently filtered at the database query boundary, so a public
+Learning entry never reveals a related draft or private Article, Note, or
+Project. Protected admin previews may show all selected relationships.
+
+`pnpm test:learning` covers input and status validation, authorization,
+mutations, chronological ordering, Topic relationships, related entities, and
+public visibility boundaries.
+
 ## Project Status
 
-Phase 7 — Notes is complete on `feat/notes` and ready for review.
+Phase 8 — Learning is complete on `feat/learning` and ready for review.
 
-The protected admin supports Note creation, editing, preview, and deletion with
-the shared rich-text and taxonomy foundations. Only published and public Notes
-render on the public list, detail pages, filtered views, and Home.
+The protected admin supports Learning creation, editing, preview, deletion,
+Topics, and relationships to existing content. Only published and public
+entries render on the chronological public timeline, Topic-filtered views, and
+Home; private related content remains hidden.
 
-Next: **Phase 8 — Learning**, following `docs/implementation-plan.md`. Media
-upload, Project case-study authoring, and the Contact submission flow remain out
-of scope until their respective phases.
+Next: **Phase 9 — Contact**, following `docs/implementation-plan.md`. Media
+upload and Project case-study authoring remain deferred, and the planned
+full-site redesign remains out of scope.

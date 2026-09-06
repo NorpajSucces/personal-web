@@ -1,0 +1,70 @@
+"use client";
+
+import { useActionState, useRef } from "react";
+
+import { deleteLearningEntry } from "./actions";
+import { initialLearningFormState } from "./schema";
+
+export function DeleteLearningButton({
+  id,
+  title,
+}: {
+  id: string;
+  title: string;
+}) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [state, formAction, pending] = useActionState(
+    deleteLearningEntry.bind(null, id),
+    initialLearningFormState,
+  );
+  return (
+    <>
+      <button
+        type="button"
+        className="min-h-10 rounded-md px-3 text-sm text-destructive hover:bg-destructive/10"
+        onClick={() => dialogRef.current?.showModal()}
+      >
+        Delete
+      </button>
+      <dialog
+        ref={dialogRef}
+        aria-labelledby={`delete-learning-${id}`}
+        className="m-auto w-[min(28rem,calc(100%-2rem))] rounded-lg border bg-card p-0 text-card-foreground shadow-xl backdrop:bg-black/60"
+      >
+        <div className="p-6">
+          <h2 id={`delete-learning-${id}`} className="font-serif text-2xl">
+            Delete {title}?
+          </h2>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            This permanently deletes the Learning entry and its relationship
+            links. Shared Topics, Articles, Notes, and Projects are kept.
+          </p>
+          <form action={formAction} className="mt-6 flex flex-wrap gap-3">
+            <button
+              type="submit"
+              disabled={pending}
+              className="min-h-11 rounded-md bg-destructive px-4 text-sm font-semibold text-white disabled:opacity-60"
+            >
+              {pending ? "Deleting…" : "Delete Learning Entry"}
+            </button>
+            <button
+              type="button"
+              disabled={pending}
+              className="min-h-11 rounded-md px-4 text-sm text-muted-foreground"
+              onClick={() => dialogRef.current?.close()}
+            >
+              Cancel
+            </button>
+          </form>
+          <p
+            role="status"
+            aria-live="polite"
+            className="mt-3 text-sm text-destructive"
+          >
+            {state.status === "error" ? state.message : ""}
+          </p>
+        </div>
+      </dialog>
+    </>
+  );
+}

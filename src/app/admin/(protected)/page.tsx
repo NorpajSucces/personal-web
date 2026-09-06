@@ -17,8 +17,7 @@ export default async function DashboardPage() {
         A place to keep creating.
       </h1>
       <p className="mt-4 max-w-prose leading-relaxed text-muted-foreground">
-        Home, Project, Article, and Note content management are ready. Learning
-        will arrive in an upcoming phase.
+        Home, Project, Article, Note, and Learning content management are ready.
       </p>
       <section aria-labelledby="workspaces-title" className="mt-10">
         <h2 id="workspaces-title" className="mb-4 text-sm font-semibold">
@@ -49,8 +48,7 @@ export default async function DashboardPage() {
           Quick actions
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Project, Article, and Note creation are available. Learning arrives in
-          a later phase.
+          Create a private draft, preview it securely, then publish when ready.
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
@@ -71,12 +69,12 @@ export default async function DashboardPage() {
           >
             New Note
           </Link>
-          <button
-            disabled
-            className="min-h-11 cursor-not-allowed rounded-md border px-4 text-sm text-muted-foreground"
+          <Link
+            href="/admin/learning/new"
+            className="inline-flex min-h-11 items-center rounded-md border border-primary/50 px-4 text-sm font-medium text-primary hover:bg-accent"
           >
             New Learning Entry
-          </button>
+          </Link>
         </div>
       </section>
     </>

@@ -28,8 +28,10 @@ function revalidateTaxonomySurfaces() {
   revalidatePath("/");
   revalidatePath("/articles");
   revalidatePath("/notes");
+  revalidatePath("/learning");
   revalidatePath("/admin/articles");
   revalidatePath("/admin/notes");
+  revalidatePath("/admin/learning");
   revalidatePath("/admin/taxonomy");
 }
 
