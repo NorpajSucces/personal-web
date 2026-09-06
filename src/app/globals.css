@@ -117,6 +117,130 @@
   }
 }
 
+@layer components {
+  .rich-text-editor-content {
+    min-height: 22rem;
+    padding: 1.25rem;
+    outline: none;
+    line-height: 1.75;
+  }
+
+  .rich-text-editor-content > * + *,
+  .rich-text-content > * + * {
+    margin-top: 1.25rem;
+  }
+
+  .rich-text-editor-content h2,
+  .rich-text-content h2 {
+    margin-top: 2.5rem;
+    font-family: var(--font-reading), ui-serif, Georgia, serif;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    line-height: 1.15;
+  }
+
+  .rich-text-editor-content h3,
+  .rich-text-content h3 {
+    margin-top: 2rem;
+    font-family: var(--font-reading), ui-serif, Georgia, serif;
+    font-size: clamp(1.35rem, 3vw, 1.7rem);
+    line-height: 1.25;
+  }
+
+  .rich-text-editor-content ul,
+  .rich-text-content ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+  }
+
+  .rich-text-editor-content ol,
+  .rich-text-content ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+  }
+
+  .rich-text-editor-content li + li,
+  .rich-text-content li + li {
+    margin-top: 0.4rem;
+  }
+
+  .rich-text-editor-content blockquote,
+  .rich-text-content blockquote {
+    border-left: 2px solid var(--primary);
+    padding-left: 1.25rem;
+    color: var(--muted-foreground);
+    font-family: var(--font-reading), ui-serif, Georgia, serif;
+    font-size: 1.1rem;
+  }
+
+  .rich-text-editor-content pre,
+  .rich-text-content pre {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    padding: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .rich-text-editor-content hr,
+  .rich-text-content hr {
+    margin-block: 2.5rem;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .rich-text-editor-content table,
+  .rich-text-content table {
+    width: 100%;
+    min-width: 32rem;
+    border-collapse: collapse;
+  }
+
+  .rich-text-editor-content th,
+  .rich-text-editor-content td,
+  .rich-text-content th,
+  .rich-text-content td {
+    border: 1px solid var(--border);
+    padding: 0.65rem;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .rich-text-editor-content th,
+  .rich-text-content th {
+    background: var(--muted);
+    font-weight: 600;
+  }
+
+  .rich-text-editor-content .selectedCell {
+    background: color-mix(in oklab, var(--primary) 16%, transparent);
+  }
+
+  .rich-text-callout,
+  .rich-text-editor-content aside[data-type="callout"] {
+    border: 1px solid color-mix(in oklab, var(--primary) 55%, var(--border));
+    border-radius: var(--radius);
+    background: var(--accent);
+    padding: 1rem 1.25rem;
+  }
+
+  .rich-text-editor-content p.is-editor-empty:first-child::before {
+    float: left;
+    height: 0;
+    color: var(--muted-foreground);
+    content: attr(data-placeholder);
+    pointer-events: none;
+  }
+
+  .rich-text-content {
+    overflow-wrap: anywhere;
+    font-family: var(--font-reading), ui-serif, Georgia, serif;
+    font-size: 1.15rem;
+    line-height: 1.9;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   body {
     transition:

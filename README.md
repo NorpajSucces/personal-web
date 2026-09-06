@@ -124,6 +124,8 @@ pnpm typecheck
 pnpm test:auth
 pnpm test:home
 pnpm test:projects
+pnpm test:articles
+pnpm test
 pnpm build
 ```
 
@@ -154,8 +156,10 @@ Admin responses are private and non-cacheable; public pages remain anonymous.
 identities and an Auth test double. Before merging or deploying, also exercise
 real email delivery, code verification, admin navigation, and logout against
 the configured development project. Home content editing is available at
-`/admin/home`, and Project management is available at `/admin/projects`. Other
-admin management pages remain placeholders for later phases.
+`/admin/home`, Project management is available at `/admin/projects`, Article
+publishing is available at `/admin/articles`, and shared Topics and Tags are
+managed at `/admin/taxonomy`. Notes and Learning remain placeholders for later
+phases.
 
 ### Home CMS development
 
@@ -163,7 +167,8 @@ admin management pages remain placeholders for later phases.
 admin environment variables. Before the first save, both pages use the original
 Home copy. Saves are immediately public; this configuration has no draft state.
 The public Home reads PostgreSQL at request time, not during the build. Database
-outages are not treated as an empty record. Other content pages remain placeholders.
+outages are not treated as an empty record. Latest published and public Projects
+and Articles are included; Notes and Learning remain placeholders.
 
 `pnpm test:home` runs validation, mapping, singleton SQL, and Server Action tests
 without connecting to Supabase. It uses Node's experimental module-mocking flag
@@ -182,16 +187,33 @@ database values for those fields are preserved during edits. `pnpm test:projects
 runs focused schema, query-boundary, authorization, and Server Action tests
 without connecting to Supabase.
 
+### Articles development
+
+`/admin/articles` provides protected create, edit, preview, and delete workflows
+with a shared Tiptap JSON editor and Topic/Tag relationships. Articles appear on
+`/articles`, their public detail route, and Home only when publication status is
+`published` and visibility is `public`. Public Article filters only expose
+taxonomy attached to public content.
+
+The V1 editor supports headings, emphasis, lists, quotes, links, inline and block
+code, dividers, tables, callouts, undo/redo, a bubble menu, and a lightweight
+slash menu. Rich content is stored only as canonical Tiptap JSON and rendered
+through a safe React renderer. Image upload and Supabase Storage integration are
+deferred; an existing cover-image path is preserved during edits.
+
+`pnpm test:articles` covers input validation, the rich-text contract, publishing
+timestamps, public query boundaries, authorization, mutations, and taxonomy
+relationships. `pnpm test` runs all current project suites.
+
 ## Project Status
 
-Phase 5 — Projects is complete on `feat/projects` and ready for review and merge.
+Phase 6 — Articles + Tiptap is complete on `feat/articles` and ready for review.
 
-The protected admin supports project creation, editing, preview, and deletion.
-Only published and public projects render on the public list, detail pages, and
-Home. The feature was exercised end to end against the development database,
-including visibility boundaries, slug changes, responsive layouts, and cleanup
-of temporary test records.
+The protected admin supports Article creation, editing, preview, deletion, and
+shared Topic/Tag management. Only published and public Articles render on the
+public list, detail pages, filtered views, and Home. Canonical rich content uses
+Tiptap JSON with a shared editor contract and safe public renderer.
 
-Next: **Phase 6 — Articles**, following `docs/implementation-plan.md`. Screenshot
-uploads, case-study authoring, other content systems, and the Contact submission
-flow remain out of scope until their respective phases.
+Next: **Phase 7 — Notes**, following `docs/implementation-plan.md`. Media upload,
+Project case-study authoring, Learning, and the Contact submission flow remain
+out of scope until their respective phases.

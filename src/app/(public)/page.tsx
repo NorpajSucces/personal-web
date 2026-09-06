@@ -4,19 +4,13 @@ import { Container } from "@/components/shared/container";
 import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { SurfaceCard } from "@/components/shared/surface-card";
+import { ArticleGrid } from "@/features/articles/article-card";
+import { getPublicArticles } from "@/features/articles/queries";
 import { getHomeContent } from "@/features/home/queries";
 import { ProjectGrid } from "@/features/projects/project-card";
 import { getPublicProjects } from "@/features/projects/queries";
 
 const latestSections = [
-  {
-    id: "articles",
-    title: "Latest articles",
-    description:
-      "Developed, long-form writing across technical and personal subjects.",
-    action: { href: "/articles", label: "View all articles" },
-    emptyMessage: "Published articles will appear here.",
-  },
   {
     id: "notes",
     title: "Latest notes",
@@ -35,9 +29,10 @@ const latestSections = [
 
 export default async function HomePage() {
   await connection();
-  const [content, latestProjects] = await Promise.all([
+  const [content, latestProjects, latestArticles] = await Promise.all([
     getHomeContent(),
     getPublicProjects(3),
+    getPublicArticles({ limit: 3 }),
   ]);
   const contactLinks = [
     {
@@ -93,6 +88,26 @@ export default async function HomePage() {
             <SurfaceCard>
               <p className="text-sm leading-6 text-muted-foreground">
                 Published projects will appear here.
+              </p>
+            </SurfaceCard>
+          )}
+        </Container>
+      </Section>
+
+      <Section id="articles" aria-labelledby="articles-title">
+        <Container>
+          <SectionHeading
+            id="articles-title"
+            title="Latest articles"
+            description="Developed, long-form writing across technical and personal subjects."
+            action={{ href: "/articles", label: "View all articles" }}
+          />
+          {latestArticles.length ? (
+            <ArticleGrid articles={latestArticles} />
+          ) : (
+            <SurfaceCard>
+              <p className="text-sm leading-6 text-muted-foreground">
+                Published articles will appear here.
               </p>
             </SurfaceCard>
           )}
