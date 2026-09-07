@@ -145,7 +145,17 @@ test("Home follows the refined sequence without content-preview queries", () => 
     previous = position;
   }
   assert.match(home, /getPublicProjects\(3\)/);
-  assert.match(home, /<Container size="home">/);
+  assert.match(home, /size="home"/);
+  assert.match(home, /00 \/ Personal digital home/);
+  for (const eyebrow of [
+    "01 / Profile",
+    "02 / Career",
+    "03 / Toolkit",
+    "04 / Recent work",
+    "05 / Connect",
+  ])
+    assert.match(home, new RegExp(`eyebrow="${eyebrow}"`));
+  assert.match(home, /data-home-rail/);
   assert.doesNotMatch(home, /getPublicArticles|Latest articles/i);
   assert.doesNotMatch(home, /getPublicNotes|Latest notes/i);
   assert.doesNotMatch(home, /getPublicLearningEntries|Latest learning/i);

@@ -3,6 +3,7 @@ import Link from "next/link";
 type SectionHeadingProps = {
   id: string;
   title: string;
+  eyebrow?: string;
   description?: string;
   action?: {
     href: string;
@@ -13,15 +14,24 @@ type SectionHeadingProps = {
 export function SectionHeading({
   id,
   title,
+  eyebrow,
   description,
   action,
 }: SectionHeadingProps) {
   return (
     <div className="mb-8 flex flex-col gap-4 border-b border-border/70 pb-5 sm:flex-row sm:items-end sm:justify-between">
       <div className="max-w-2xl">
+        {eyebrow ? (
+          <p
+            aria-hidden="true"
+            className="font-mono text-[0.6875rem] leading-none tracking-[0.16em] text-primary uppercase"
+          >
+            {eyebrow}
+          </p>
+        ) : null}
         <h2
           id={id}
-          className="font-serif text-[clamp(2rem,5vw,3rem)] leading-none font-medium tracking-[-0.025em] text-balance"
+          className={`font-serif text-[clamp(2rem,5vw,3rem)] leading-none font-medium tracking-[-0.025em] text-balance ${eyebrow ? "mt-3" : ""}`}
         >
           {title}
         </h2>

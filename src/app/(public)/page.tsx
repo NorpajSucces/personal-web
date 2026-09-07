@@ -25,13 +25,28 @@ export default async function HomePage() {
     { label: "GitHub", href: content.githubUrl },
     { label: "LinkedIn", href: content.linkedinUrl },
   ].filter((link) => link.href);
+  const homeRailClassName = "border-x border-border/50";
   return (
     <>
-      <section aria-labelledby="hero-title">
-        <Container>
-          <div className="max-w-4xl py-[clamp(6rem,15vw,11rem)]">
-            <p className="mb-5 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
-              Personal digital home
+      <section
+        aria-labelledby="hero-title"
+        className="relative overflow-hidden border-b border-border/70"
+      >
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+        >
+          <Container className="grid h-full grid-cols-4 border-x border-border/40 px-0 opacity-50">
+            <span className="border-r border-border/40" />
+            <span className="border-r border-border/40" />
+            <span className="border-r border-border/40" />
+            <span />
+          </Container>
+        </div>
+        <Container className="relative z-10">
+          <div className="max-w-4xl py-[clamp(6.5rem,15vw,11rem)]">
+            <p className="mb-6 font-mono text-[0.6875rem] font-medium tracking-[0.18em] text-primary uppercase">
+              00 / Personal digital home
             </p>
             <h1
               id="hero-title"
@@ -46,19 +61,36 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      <Section id="about" aria-labelledby="about-title">
-        <Container size="home">
-          <SectionHeading id="about-title" title={content.aboutTitle} />
+      <Section id="about" aria-labelledby="about-title" className="py-0">
+        <Container
+          size="home"
+          data-home-rail
+          className={`${homeRailClassName} py-[var(--section-space)]`}
+        >
+          <SectionHeading
+            id="about-title"
+            eyebrow="01 / Profile"
+            title={content.aboutTitle}
+          />
           <p className="whitespace-pre-line font-serif text-xl leading-9 wrap-anywhere text-foreground text-pretty sm:text-2xl sm:leading-10">
             {content.aboutContent}
           </p>
         </Container>
       </Section>
 
-      <Section id="experience" aria-labelledby="experience-title">
-        <Container size="home">
+      <Section
+        id="experience"
+        aria-labelledby="experience-title"
+        className="py-0"
+      >
+        <Container
+          size="home"
+          data-home-rail
+          className={`${homeRailClassName} py-[var(--section-space)]`}
+        >
           <SectionHeading
             id="experience-title"
+            eyebrow="02 / Career"
             title="Experience"
             description="Roles and collaborations that have shaped how I work."
           />
@@ -72,23 +104,34 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      <Section id="tech" aria-labelledby="tech-title">
-        <Container size="home">
+      <Section id="tech" aria-labelledby="tech-title" className="py-0">
+        <Container
+          size="home"
+          data-home-rail
+          className={`${homeRailClassName} py-[var(--section-space)]`}
+        >
           <SectionHeading
             id="tech-title"
+            eyebrow="03 / Toolkit"
             title="Tech & tools"
             description="Tools I use and have worked with."
           />
           <dl className="border-y">
-            {techToolGroups.map((group) => (
+            {techToolGroups.map((group, index) => (
               <div
                 key={group.label}
-                className="grid gap-3 border-b py-5 last:border-b-0 sm:grid-cols-[9rem_1fr] sm:gap-6"
+                className="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-3 gap-y-2 border-b py-5 last:border-b-0 sm:grid-cols-[2.5rem_8rem_minmax(0,1fr)] sm:gap-x-4"
               >
-                <dt className="text-sm font-semibold text-primary">
+                <span
+                  aria-hidden="true"
+                  className="font-mono text-[0.6875rem] tracking-[0.12em] text-muted-foreground"
+                >
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <dt className="font-mono text-xs font-semibold tracking-[0.04em] text-primary uppercase">
                   {group.label}
                 </dt>
-                <dd className="text-sm leading-7 wrap-anywhere text-muted-foreground">
+                <dd className="col-start-2 font-mono text-xs leading-7 wrap-anywhere text-muted-foreground sm:col-start-3 sm:row-start-1">
                   {group.items.join(" / ")}
                 </dd>
               </div>
@@ -97,10 +140,15 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      <Section id="projects" aria-labelledby="projects-title">
-        <Container size="home">
+      <Section id="projects" aria-labelledby="projects-title" className="py-0">
+        <Container
+          size="home"
+          data-home-rail
+          className={`${homeRailClassName} py-[var(--section-space)]`}
+        >
           <SectionHeading
             id="projects-title"
+            eyebrow="04 / Recent work"
             title="Latest projects"
             description="Recent proof of work and engineering case studies."
             action={{ href: "/projects", label: "View all projects" }}
@@ -115,22 +163,42 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      <Section id="contact" aria-labelledby="contact-title">
-        <Container size="home">
+      <Section id="contact" aria-labelledby="contact-title" className="py-0">
+        <Container
+          size="home"
+          data-home-rail
+          className={`${homeRailClassName} py-[var(--section-space)]`}
+        >
           <SectionHeading
             id="contact-title"
+            eyebrow="05 / Connect"
             title={content.contactTitle}
             description={content.contactDescription}
           />
           {contactLinks.length ? (
-            <ul className="flex flex-wrap gap-x-6 gap-y-2">
-              {contactLinks.map((link) => (
-                <li key={link.href} className="min-w-0">
+            <ul className="border-y">
+              {contactLinks.map((link, index) => (
+                <li
+                  key={link.href}
+                  className="min-w-0 border-b last:border-b-0"
+                >
                   <a
                     href={link.href}
-                    className="inline-block rounded-sm py-2 wrap-anywhere text-primary underline underline-offset-4 hover:text-foreground"
+                    className="group grid min-h-14 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 py-3 text-sm hover:text-primary"
                   >
-                    {link.label}
+                    <span
+                      aria-hidden="true"
+                      className="font-mono text-[0.6875rem] tracking-[0.12em] text-muted-foreground"
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="wrap-anywhere">{link.label}</span>
+                    <span
+                      aria-hidden="true"
+                      className="text-primary transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
+                    >
+                      ↗
+                    </span>
                   </a>
                 </li>
               ))}
@@ -144,9 +212,13 @@ export default async function HomePage() {
         </Container>
       </Section>
 
-      <footer className="border-t border-border/70 py-8">
-        <Container size="home">
-          <p className="text-sm text-muted-foreground">
+      <footer className="border-t border-border/70">
+        <Container
+          size="home"
+          data-home-rail
+          className={`${homeRailClassName} py-8`}
+        >
+          <p className="font-mono text-[0.6875rem] tracking-[0.08em] text-muted-foreground uppercase">
             &copy; {new Date().getFullYear()} Zhafran
           </p>
         </Container>

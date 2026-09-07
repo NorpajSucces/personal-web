@@ -156,6 +156,11 @@ Footer
 Experience, Tech & Tools, and Home Projects should favor typography, spacing,
 and subtle dividers over large cards or decorative timeline graphics.
 
+Home may use faint vertical rails, small monospace section indexes, and compact
+metadata to create a warm editorial-grid character. These details organize the
+reading flow; they must remain secondary to content and must not turn the page
+into a dense dashboard or imitate a reference site's signature decoration.
+
 ## 10. Public vs Admin UI
 
 ### Public

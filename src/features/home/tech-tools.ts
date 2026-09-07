@@ -1,14 +1,18 @@
 export const techToolGroups = [
   {
+    label: "Data engineering",
+    items: ["Python", "SQL", "PostgreSQL", "Pandas"],
+  },
+  {
+    label: "AI & machine learning",
+    items: ["NumPy", "scikit-learn", "Jupyter"],
+  },
+  {
     label: "Web",
     items: ["TypeScript", "React", "Next.js", "Tailwind CSS"],
   },
   {
-    label: "Data & content",
-    items: ["PostgreSQL", "Supabase", "Drizzle ORM", "Tiptap", "Zod"],
-  },
-  {
     label: "Workflow",
-    items: ["Node.js", "pnpm", "Git", "GitHub", "VS Code", "Codex"],
+    items: ["Git", "GitHub", "VS Code", "pnpm", "Codex"],
   },
 ] as const;
