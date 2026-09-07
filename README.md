@@ -41,16 +41,16 @@ Home contains:
 
 - Hero / introduction
 - About
+- Experience
+- Tech & Tools
 - Latest projects
-- Latest articles
-- Latest notes
-- Latest learning entries
 - Contact
+- Footer
 
 Private admin area:
 
 - Dashboard
-- Home content management
+- Home content and Experience management
 - Projects
 - Articles
 - Notes
@@ -123,6 +123,7 @@ pnpm lint
 pnpm typecheck
 pnpm test:auth
 pnpm test:home
+pnpm test:experience
 pnpm test:projects
 pnpm test:articles
 pnpm test:notes
@@ -169,8 +170,14 @@ shared Topics and Tags are managed at `/admin/taxonomy`.
 admin environment variables. Before the first save, both pages use the original
 Home copy. Saves are immediately public; this configuration has no draft state.
 The public Home reads PostgreSQL at request time, not during the build. Database
-outages are not treated as an empty record. Latest published and public Projects,
-Articles, Notes, and Learning entries are included automatically.
+outages are not treated as an empty record. Latest published and public Projects
+are included automatically. Article, Note, and Learning content remains
+available through its dedicated public route rather than being previewed on Home.
+
+Experience management is integrated into `/admin/home`. Entries use a dedicated
+table, appear publicly immediately, and are ordered by newest start date. A
+current entry has no end date and displays `Present`. Tech & Tools is intentionally
+maintained in one code-owned configuration rather than the database.
 
 `pnpm test:home` runs validation, mapping, singleton SQL, and Server Action tests
 without connecting to Supabase. It uses Node's experimental module-mocking flag
@@ -193,7 +200,7 @@ without connecting to Supabase.
 
 `/admin/articles` provides protected create, edit, preview, and delete workflows
 with a shared Tiptap JSON editor and Topic/Tag relationships. Articles appear on
-`/articles`, their public detail route, and Home only when publication status is
+`/articles` and their public detail route only when publication status is
 `published` and visibility is `public`. Public Article filters only expose
 taxonomy attached to public content.
 
@@ -215,8 +222,8 @@ renderer, Topics, Tags, slug rules, and first-publication timestamp behavior.
 They remain a distinct content type rather than being categorized by a dedicated
 Note type enum.
 
-Notes appear on `/notes`, their public detail route, Topic/Tag filtered views,
-and Home only when publication status is `published` and visibility is `public`.
+Notes appear on `/notes`, their public detail route, and Topic/Tag filtered views
+only when publication status is `published` and visibility is `public`.
 Deleting a Note removes its junction rows while preserving shared Topics and
 Tags. Image upload remains deferred and existing cover-image paths are preserved.
 
@@ -232,8 +239,8 @@ description, the Exploring/Learning/Practicing stages, shared Topics, and
 optional relationships to Articles, Notes, and Projects. Learning does not use
 Tags, slugs, rich text, skill percentages, or a public detail route.
 
-Learning entries appear on `/learning`, Topic-filtered timeline views, and Home
-only when publication status is `published` and visibility is `public`. Related
+Learning entries appear on `/learning` and Topic-filtered timeline views only
+when publication status is `published` and visibility is `public`. Related
 content is independently filtered at the database query boundary, so a public
 Learning entry never reveals a related draft or private Article, Note, or
 Project. Protected admin previews may show all selected relationships.
@@ -244,13 +251,13 @@ public visibility boundaries.
 
 ## Project Status
 
-Phase 8 — Learning is complete on `feat/learning` and ready for review.
+Phase 8.5 — Home Redesign + Experience CMS is implemented on
+`feat/home-refinement`.
 
-The protected admin supports Learning creation, editing, preview, deletion,
-Topics, and relationships to existing content. Only published and public
-entries render on the chronological public timeline, Topic-filtered views, and
-Home; private related content remains hidden.
+Home now uses a focused narrow profile composition after the Hero, with editable
+Experience entries, code-owned Tech & Tools, compact latest Projects, the existing
+CMS-backed About and Contact sections, and a restrained footer. Articles, Notes,
+and Learning remain available on their dedicated routes.
 
 Next: **Phase 9 — Contact**, following `docs/implementation-plan.md`. Media
-upload and Project case-study authoring remain deferred, and the planned
-full-site redesign remains out of scope.
+upload and Project case-study authoring remain deferred.

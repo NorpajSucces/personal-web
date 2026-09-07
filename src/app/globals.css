@@ -57,6 +57,7 @@
 
   --radius: 0.75rem;
   --container-page: 68rem;
+  --container-home: 48rem;
   --container-reading: 44rem;
   --page-gutter: clamp(1.25rem, 4vw, 2rem);
   --section-space: clamp(4rem, 8vw, 7rem);

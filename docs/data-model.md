@@ -208,9 +208,32 @@ HomeContent
 
 Home previews are not manually stored as featured references in V1.
 
-Latest Projects, Articles, Notes, and Learning entries are selected automatically from current public content.
+Latest Projects are selected automatically from current published and public
+Project content. Tech & Tools is code-owned and is not stored in HomeContent.
 
-## 9. Many-to-Many Relations
+## 9. Experience
+
+Fields:
+
+```text
+Experience
+├── id
+├── role
+├── organization
+├── startDate
+├── endDate (optional only while current)
+├── isCurrent
+├── description (optional)
+├── createdAt
+└── updatedAt
+```
+
+Experience is part of the public Home profile and does not use the general
+draft/public publication model. Entries are ordered automatically by
+`startDate DESC`; no manual ordering field is stored. A current entry has no
+end date and renders its period with `Present`.
+
+## 10. Many-to-Many Relations
 
 Expected junction tables:
 
@@ -227,7 +250,7 @@ learning_notes
 learning_projects
 ```
 
-## 10. Rich Content
+## 11. Rich Content
 
 Canonical storage:
 
@@ -243,7 +266,7 @@ Do not store HTML as a second canonical source of truth.
 
 Rendered HTML/React is derived from the JSON representation.
 
-## 11. Media
+## 12. Media
 
 Images are stored in Supabase Storage.
 
@@ -258,7 +281,7 @@ Types include:
 
 Private media must not be permanently exposed through public URLs.
 
-## 12. Suggested Database Constraints
+## 13. Suggested Database Constraints
 
 Implementation should consider:
 
@@ -269,5 +292,6 @@ Implementation should consider:
 - Cascading strategy deliberately chosen for relation cleanup
 - Indexes on commonly queried publication/visibility/date fields
 - Indexes or uniqueness for Topic/Tag slugs
+- Experience date-state consistency and newest-first start-date access
 
 Exact SQL/Drizzle definitions belong to implementation, but the relational semantics above are part of the specification.

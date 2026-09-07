@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 const containerWidths = {
   page: "max-w-[var(--container-page)]",
+  home: "max-w-[var(--container-home)]",
   reading: "max-w-[var(--container-reading)]",
 } as const;
 

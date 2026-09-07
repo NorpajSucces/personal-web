@@ -306,6 +306,10 @@ Public content is suitable for caching/revalidation.
 
 Publishing or editing public content should invalidate/revalidate affected public pages.
 
+Home Experience mutations revalidate both `/` and `/admin/home`. Experience is
+stored in its own table and ordered by `startDate DESC`; the code-owned Tech &
+Tools list requires no database or cache layer.
+
 Authenticated admin routes and session-related responses must not be treated as shared public cacheable responses.
 
 ## 18. Security Principles

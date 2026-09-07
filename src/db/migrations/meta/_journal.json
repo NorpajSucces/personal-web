@@ -8,6 +8,13 @@
       "when": 1788541845208,
       "tag": "0000_initial_content_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788712591865,
+      "tag": "0001_add_experiences",
+      "breakpoints": true
     }
   ]
 }

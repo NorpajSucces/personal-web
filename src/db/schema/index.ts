@@ -1,5 +1,6 @@
 export * from "./articles";
 export * from "./enums";
+export * from "./experiences";
 export * from "./home";
 export * from "./learning";
 export * from "./notes";
