@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Container } from "@/components/shared/container";
 import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
+import { ContactForm } from "@/features/contact/contact-form";
 import { ExperienceList } from "@/features/home/experience-list";
 import { getExperiences } from "@/features/home/experience-queries";
 import { HomeProjectList } from "@/features/home/home-project-list";
@@ -175,40 +176,41 @@ export default async function HomePage() {
             title={content.contactTitle}
             description={content.contactDescription}
           />
+          <ContactForm initialSubmissionId={crypto.randomUUID()} />
           {contactLinks.length ? (
-            <ul className="border-y">
-              {contactLinks.map((link, index) => (
-                <li
-                  key={link.href}
-                  className="min-w-0 border-b last:border-b-0"
-                >
-                  <a
-                    href={link.href}
-                    className="group grid min-h-14 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 py-3 text-sm hover:text-primary"
+            <div className="mt-10">
+              <p className="mb-3 font-mono text-[0.6875rem] tracking-[0.12em] text-muted-foreground uppercase">
+                Direct contact
+              </p>
+              <ul className="border-y">
+                {contactLinks.map((link, index) => (
+                  <li
+                    key={link.href}
+                    className="min-w-0 border-b last:border-b-0"
                   >
-                    <span
-                      aria-hidden="true"
-                      className="font-mono text-[0.6875rem] tracking-[0.12em] text-muted-foreground"
+                    <a
+                      href={link.href}
+                      className="group grid min-h-14 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 py-3 text-sm hover:text-primary"
                     >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span className="wrap-anywhere">{link.label}</span>
-                    <span
-                      aria-hidden="true"
-                      className="text-primary transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
-                    >
-                      ↗
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-base leading-7 text-muted-foreground text-pretty">
-              Contact details and the message form will be added when the
-              contact flow is implemented.
-            </p>
-          )}
+                      <span
+                        aria-hidden="true"
+                        className="font-mono text-[0.6875rem] tracking-[0.12em] text-muted-foreground"
+                      >
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+                      <span className="wrap-anywhere">{link.label}</span>
+                      <span
+                        aria-hidden="true"
+                        className="text-primary transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
+                      >
+                        ↗
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </Container>
       </Section>
 
