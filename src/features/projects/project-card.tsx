@@ -1,6 +1,8 @@
 import Link from "next/link";
 
+import { ExternalLink } from "@/components/shared/external-link";
 import { SurfaceCard } from "@/components/shared/surface-card";
+import { MediaImage } from "@/features/media/media-image";
 
 import type { ProjectSummary } from "./types";
 
@@ -8,22 +10,17 @@ export function projectStatusLabel(status: ProjectSummary["projectStatus"]) {
   return status === "completed" ? "Completed" : "In progress";
 }
 
-function ExternalLink({ href, children }: { href: string; children: string }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="rounded-sm text-sm font-medium text-primary underline-offset-4 hover:underline"
-    >
-      {children} <span aria-hidden="true">↗</span>
-    </a>
-  );
-}
-
 export function ProjectCard({ project }: { project: ProjectSummary }) {
   return (
     <SurfaceCard className="flex h-full min-w-0 flex-col">
+      {project.screenshotPath ? (
+        <MediaImage
+          path={project.screenshotPath}
+          alt={`${project.name} screenshot`}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="mb-5 h-auto w-full rounded-md border bg-muted object-cover"
+        />
+      ) : null}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <h2 className="font-serif text-2xl leading-tight wrap-anywhere">
           <Link
@@ -60,10 +57,20 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
           View project →
         </Link>
         {project.githubUrl ? (
-          <ExternalLink href={project.githubUrl}>GitHub</ExternalLink>
+          <ExternalLink
+            href={project.githubUrl}
+            className="rounded-sm text-sm font-medium text-primary underline-offset-4 hover:underline"
+          >
+            GitHub
+          </ExternalLink>
         ) : null}
         {project.liveDemoUrl ? (
-          <ExternalLink href={project.liveDemoUrl}>Live demo</ExternalLink>
+          <ExternalLink
+            href={project.liveDemoUrl}
+            className="rounded-sm text-sm font-medium text-primary underline-offset-4 hover:underline"
+          >
+            Live demo
+          </ExternalLink>
         ) : null}
       </div>
     </SurfaceCard>

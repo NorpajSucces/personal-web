@@ -4,6 +4,7 @@ import StarterKit from "@tiptap/starter-kit";
 
 import { isSafeHttpUrl } from "./contract";
 import { Callout } from "./callout";
+import { MediaImage } from "./media-image";
 
 export function createRichTextExtensions(placeholder = "Start writing…") {
   return [
@@ -21,6 +22,7 @@ export function createRichTextExtensions(placeholder = "Start writing…") {
     }),
     TableKit,
     Callout,
+    MediaImage,
     Placeholder.configure({ placeholder }),
   ];
 }

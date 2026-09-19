@@ -19,6 +19,7 @@ const summaryColumns = {
   title: articles.title,
   slug: articles.slug,
   excerpt: articles.excerpt,
+  coverImagePath: articles.coverImagePath,
   publicationStatus: articles.publicationStatus,
   visibility: articles.visibility,
   publishedAt: articles.publishedAt,
@@ -140,6 +141,7 @@ export async function createArticleRecord(values: ArticleFormValues) {
         slug: values.slug,
         excerpt: values.excerpt,
         content: values.content,
+        coverImagePath: values.coverImagePath || null,
         publicationStatus: values.publicationStatus,
         visibility: values.visibility,
         publishedAt: resolvePublishedAt(null, values.publicationStatus),
@@ -179,6 +181,7 @@ export async function updateArticleRecord(
         slug: values.slug,
         excerpt: values.excerpt,
         content: values.content,
+        coverImagePath: values.coverImagePath || null,
         publicationStatus: values.publicationStatus,
         visibility: values.visibility,
         publishedAt,
@@ -271,6 +274,15 @@ export async function getPublicArticleBySlug(
     .limit(1);
   if (!article) return undefined;
   return (await attachTaxonomy([article]))[0];
+}
+
+export async function getPublicArticleSitemapEntries() {
+  const db = await getDatabase();
+  return db
+    .select({ slug: articles.slug, updatedAt: articles.updatedAt })
+    .from(articles)
+    .where(publicCondition)
+    .orderBy(desc(articles.updatedAt));
 }
 
 export async function getPublicArticleTaxonomy() {

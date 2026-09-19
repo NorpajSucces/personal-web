@@ -47,11 +47,11 @@ export default async function EditArticlePage({
             article.publishedAt?.toLocaleDateString("en", {
               dateStyle: "long",
             }) ?? null,
+          coverImagePath: article.coverImagePath ?? "",
         }}
         initialTopics={taxonomy.topics}
         initialTags={taxonomy.tags}
         mode="edit"
-        hasCoverImage={Boolean(article.coverImagePath)}
       />
     </>
   );

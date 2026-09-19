@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Container } from "@/components/shared/container";
 import { RichTextRenderer } from "@/features/rich-text/renderer";
+import { MediaImage } from "@/features/media/media-image";
 
 import { formatNoteDate } from "./note-card";
 import type { NoteWithTaxonomy } from "./types";
@@ -40,6 +41,13 @@ export function NoteDetail({
         <p className="mt-6 whitespace-pre-line text-lg leading-8 wrap-anywhere text-muted-foreground">
           {note.excerpt}
         </p>
+        {note.coverImagePath ? (
+          <MediaImage
+            path={note.coverImagePath}
+            alt=""
+            className="mt-7 h-auto w-full rounded-lg border bg-muted object-cover"
+          />
+        ) : null}
         {note.topics.length || note.tags.length ? (
           <div className="mt-6 space-y-3 border-y py-4 text-sm">
             {note.topics.length ? (

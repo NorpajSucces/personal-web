@@ -38,6 +38,7 @@ function isUniqueViolation(error: unknown): boolean {
 function revalidateNoteSurfaces(slugs: string[]) {
   revalidatePath("/");
   revalidatePath("/notes");
+  revalidatePath("/sitemap.xml");
   revalidatePath("/admin/notes");
   for (const slug of new Set(slugs.filter(Boolean)))
     revalidatePath(`/notes/${slug}`);

@@ -3,6 +3,8 @@ import { Geist, Newsreader } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { ThemeProvider } from "@/components/shared/theme-provider";
+import { createPublicMetadata, SITE_NAME } from "@/lib/seo";
+import { getSiteUrl } from "@/lib/site-url";
 
 import "./globals.css";
 
@@ -16,13 +18,22 @@ const readingFont = Newsreader({
   variable: "--font-reading",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Zhafran",
-    template: "%s | Zhafran",
-  },
+const publicMetadata = createPublicMetadata({
   description:
     "A personal digital home for what Zhafran builds, learns, and thinks about.",
+  path: "/",
+});
+
+export const metadata: Metadata = {
+  ...publicMetadata,
+  metadataBase: getSiteUrl(),
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
 };
 
 type RootLayoutProps = Readonly<{

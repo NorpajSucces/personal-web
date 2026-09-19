@@ -204,6 +204,7 @@ test("Note edits preserve an intentional slug and revalidate old and new URLs", 
   assert.equal(update.values.slug, "intentional-note-slug");
   assert(calls.some((call) => call.path === "/notes/original-note"));
   assert(calls.some((call) => call.path === "/notes/intentional-note-slug"));
+  assert(calls.some((call) => call.path === "/sitemap.xml"));
 });
 
 test("Note delete targets only the Note and redirects to the admin list", async () => {

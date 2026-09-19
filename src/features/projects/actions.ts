@@ -33,6 +33,7 @@ function isUniqueViolation(error: unknown): boolean {
 function revalidateProjectSurfaces(slugs: string[]) {
   revalidatePath("/");
   revalidatePath("/projects");
+  revalidatePath("/sitemap.xml");
   revalidatePath("/admin/projects");
   for (const slug of new Set(slugs.filter(Boolean))) {
     revalidatePath(`/projects/${slug}`);

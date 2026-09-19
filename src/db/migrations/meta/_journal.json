@@ -15,6 +15,13 @@
       "when": 1788712591865,
       "tag": "0001_add_experiences",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789783200000,
+      "tag": "0002_add_private_media_bucket",
+      "breakpoints": true
     }
   ]
 }

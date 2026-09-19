@@ -19,6 +19,7 @@ export type ArticleSummary = Pick<
   | "title"
   | "slug"
   | "excerpt"
+  | "coverImagePath"
   | "publicationStatus"
   | "visibility"
   | "publishedAt"

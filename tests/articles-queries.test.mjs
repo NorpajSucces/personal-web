@@ -72,8 +72,11 @@ const database = drizzle(async (query, params) => {
 });
 
 mock.module("../src/db/index.ts", { namedExports: { db: database } });
-const { getPublicArticleBySlug, getPublicArticles } =
-  await import("../src/features/articles/queries.ts");
+const {
+  getPublicArticleBySlug,
+  getPublicArticles,
+  getPublicArticleSitemapEntries,
+} = await import("../src/features/articles/queries.ts");
 
 beforeEach(() => {
   calls.length = 0;
@@ -128,4 +131,11 @@ test("public Article detail attaches shared Topics and Tags", async () => {
   assert.deepEqual(article.tags, [
     { id: tagId, name: "Next.js", slug: "next-js" },
   ]);
+});
+
+test("Article sitemap query selects only Published and Public records", async () => {
+  await getPublicArticleSitemapEntries();
+  assert.match(calls[0].query, /"publication_status" = \$1/);
+  assert.match(calls[0].query, /"visibility" = \$2/);
+  assert.deepEqual(calls[0].params, ["published", "public"]);
 });
