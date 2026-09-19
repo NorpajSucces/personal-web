@@ -10,6 +10,7 @@ import { HomeProjectList } from "@/features/home/home-project-list";
 import { getHomeContent } from "@/features/home/queries";
 import { techToolGroups } from "@/features/home/tech-tools";
 import { getPublicProjects } from "@/features/projects/queries";
+import { getSafeEmailHref, getSafeHttpUrl } from "@/lib/url";
 
 export default async function HomePage() {
   await connection();
@@ -18,14 +19,24 @@ export default async function HomePage() {
     getExperiences(),
     getPublicProjects(3),
   ]);
-  const contactLinks = [
-    {
+  const contactLinks: Array<{
+    label: string;
+    href: string;
+    external: boolean;
+  }> = [];
+  const emailHref = getSafeEmailHref(content.publicEmail);
+  const githubUrl = getSafeHttpUrl(content.githubUrl);
+  const linkedinUrl = getSafeHttpUrl(content.linkedinUrl);
+  if (emailHref && content.publicEmail)
+    contactLinks.push({
       label: content.publicEmail,
-      href: content.publicEmail ? `mailto:${content.publicEmail}` : "",
-    },
-    { label: "GitHub", href: content.githubUrl },
-    { label: "LinkedIn", href: content.linkedinUrl },
-  ].filter((link) => link.href);
+      href: emailHref,
+      external: false,
+    });
+  if (githubUrl)
+    contactLinks.push({ label: "GitHub", href: githubUrl, external: true });
+  if (linkedinUrl)
+    contactLinks.push({ label: "LinkedIn", href: linkedinUrl, external: true });
   const homeRailClassName = "border-x border-border/50";
   return (
     <>
@@ -190,6 +201,8 @@ export default async function HomePage() {
                   >
                     <a
                       href={link.href}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
                       className="group grid min-h-14 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-3 py-3 text-sm hover:text-primary"
                     >
                       <span
@@ -198,12 +211,17 @@ export default async function HomePage() {
                       >
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <span className="wrap-anywhere">{link.label}</span>
+                      <span className="wrap-anywhere">
+                        {link.label}
+                        {link.external ? (
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        ) : null}
+                      </span>
                       <span
                         aria-hidden="true"
                         className="text-primary transition-transform group-hover:translate-x-0.5 motion-reduce:transition-none"
                       >
-                        ↗
+                        {link.external ? "↗" : "→"}
                       </span>
                     </a>
                   </li>

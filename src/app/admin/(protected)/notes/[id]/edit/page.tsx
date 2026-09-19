@@ -47,11 +47,11 @@ export default async function EditNotePage({
             note.publishedAt?.toLocaleDateString("en", {
               dateStyle: "long",
             }) ?? null,
+          coverImagePath: note.coverImagePath ?? "",
         }}
         initialTopics={taxonomy.topics}
         initialTags={taxonomy.tags}
         mode="edit"
-        hasCoverImage={Boolean(note.coverImagePath)}
       />
     </>
   );

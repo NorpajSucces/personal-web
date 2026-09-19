@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { Container } from "@/components/shared/container";
+import { ExternalLink } from "@/components/shared/external-link";
+import { MediaImage } from "@/features/media/media-image";
 
 import { parseCaseStudy } from "./case-study";
 import { projectStatusLabel } from "./project-card";
@@ -37,6 +39,13 @@ export function ProjectDetail({
         <p className="mt-7 whitespace-pre-line text-lg leading-8 wrap-anywhere text-muted-foreground">
           {project.description}
         </p>
+        {project.screenshotPath ? (
+          <MediaImage
+            path={project.screenshotPath}
+            alt={`${project.name} screenshot`}
+            className="mt-8 h-auto w-full rounded-lg border bg-muted object-contain"
+          />
+        ) : null}
         {project.technologies.length ? (
           <ul aria-label="Technologies" className="mt-7 flex flex-wrap gap-2">
             {project.technologies.map((technology) => (
@@ -51,24 +60,20 @@ export function ProjectDetail({
         ) : null}
         <div className="mt-7 flex flex-wrap gap-5">
           {project.githubUrl ? (
-            <a
+            <ExternalLink
               href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               className="rounded-sm font-medium text-primary hover:underline"
             >
-              GitHub ↗
-            </a>
+              GitHub
+            </ExternalLink>
           ) : null}
           {project.liveDemoUrl ? (
-            <a
+            <ExternalLink
               href={project.liveDemoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
               className="rounded-sm font-medium text-primary hover:underline"
             >
-              Live demo ↗
-            </a>
+              Live demo
+            </ExternalLink>
           ) : null}
         </div>
         {blocks.length ? (

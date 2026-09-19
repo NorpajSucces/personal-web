@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState, useEffect, useRef, useState } from "react";
 
+import { MediaUploadField } from "@/features/media/media-upload-field";
 import {
   emptyRichTextDocument,
   type RichTextDocument,
@@ -28,6 +29,7 @@ export type ArticleFormInitialValues = {
   topicIds: string[];
   tagIds: string[];
   publishedAt: string | null;
+  coverImagePath: string;
 };
 
 type ArticleFormProps = {
@@ -39,7 +41,6 @@ type ArticleFormProps = {
   initialTopics: TaxonomyOption[];
   initialTags: TaxonomyOption[];
   mode: "create" | "edit";
-  hasCoverImage?: boolean;
 };
 
 const inputClassName =
@@ -55,6 +56,7 @@ export const newArticleValues: ArticleFormInitialValues = {
   topicIds: [],
   tagIds: [],
   publishedAt: null,
+  coverImagePath: "",
 };
 
 function FieldError({
@@ -77,7 +79,6 @@ export function ArticleForm({
   initialTopics,
   initialTags,
   mode,
-  hasCoverImage = false,
 }: ArticleFormProps) {
   const [values, setValues] = useState(initialValues);
   const [topics, setTopics] = useState(initialTopics);
@@ -191,18 +192,20 @@ export function ArticleForm({
           <FieldError field="excerpt" error={state.errors?.excerpt?.[0]} />
         </div>
         <div className="space-y-2">
-          <span className="block text-sm font-medium">Content</span>
+          <p className="block text-sm font-medium">Content</p>
           <input
             type="hidden"
             name="contentJson"
             value={JSON.stringify(values.content)}
             readOnly
           />
-          <div
-            {...errorProps("content")}
-            tabIndex={state.errors?.content?.length ? -1 : undefined}
-          >
+          <div>
             <RichTextEditor
+              ariaLabel="Article content"
+              ariaInvalid={Boolean(state.errors?.content?.length)}
+              ariaDescribedBy={
+                state.errors?.content?.length ? "content-error" : undefined
+              }
               value={values.content}
               onChange={(content) =>
                 setValues((current) => ({ ...current, content }))
@@ -291,7 +294,7 @@ export function ArticleForm({
             </select>
           </div>
         </div>
-        <dl className="grid gap-4 text-sm sm:grid-cols-2">
+        <dl className="grid gap-4 text-sm">
           <div>
             <dt className="font-medium">Published date</dt>
             <dd className="mt-1 text-muted-foreground">
@@ -300,15 +303,23 @@ export function ArticleForm({
                 : "Set automatically the first time this Article is published."}
             </dd>
           </div>
-          <div>
-            <dt className="font-medium">Cover image</dt>
-            <dd className="mt-1 text-muted-foreground">
-              {hasCoverImage
-                ? "An existing cover-image reference is preserved."
-                : "No cover image. Upload support will arrive with shared media."}
-            </dd>
-          </div>
         </dl>
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Cover image</p>
+          <MediaUploadField
+            category="article"
+            label="cover image"
+            name="coverImagePath"
+            value={values.coverImagePath}
+            onChange={(coverImagePath) =>
+              setValues((current) => ({ ...current, coverImagePath }))
+            }
+          />
+          <FieldError
+            field="coverImagePath"
+            error={state.errors?.coverImagePath?.[0]}
+          />
+        </div>
       </fieldset>
 
       <div className="flex flex-wrap items-center gap-4">

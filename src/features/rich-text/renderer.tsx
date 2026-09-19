@@ -1,8 +1,11 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
+
+import { ExternalLink } from "@/components/shared/external-link";
+import { getMediaUrl, isValidMediaPath } from "@/features/media/config";
 
 import {
   isRichTextDocument,
-  isSafeHttpUrl,
   type RichTextDocument,
   type RichTextMark,
   type RichTextNode,
@@ -22,17 +25,15 @@ function renderMarkedText(text: string, marks: RichTextMark[] = []) {
           {content}
         </code>
       );
-    if (mark.type === "link" && isSafeHttpUrl(mark.attrs?.href))
+    if (mark.type === "link")
       return (
-        <a
+        <ExternalLink
           key={index}
-          href={mark.attrs.href}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={mark.attrs?.href}
           className="text-primary underline underline-offset-4"
         >
           {content}
-        </a>
+        </ExternalLink>
       );
     return content;
   }, text);
@@ -69,9 +70,33 @@ function renderNode(node: RichTextNode, key: number): ReactNode {
       </pre>
     );
   if (node.type === "horizontalRule") return <hr key={key} />;
+  if (node.type === "image") {
+    const path = node.attrs?.path;
+    if (typeof path !== "string" || !isValidMediaPath(path)) return null;
+    const alt = typeof node.attrs?.alt === "string" ? node.attrs.alt : "";
+    return (
+      <figure key={key}>
+        <Image
+          src={getMediaUrl(path)}
+          alt={alt}
+          width={1600}
+          height={900}
+          sizes="(max-width: 768px) 100vw, 768px"
+          className="h-auto w-full rounded-md border bg-muted object-contain"
+          unoptimized
+        />
+      </figure>
+    );
+  }
   if (node.type === "table")
     return (
-      <div key={key} className="overflow-x-auto">
+      <div
+        key={key}
+        role="region"
+        aria-label="Scrollable content table"
+        tabIndex={0}
+        className="overflow-x-auto rounded-sm"
+      >
         <table>
           <tbody>{renderChildren(node)}</tbody>
         </table>
@@ -80,12 +105,16 @@ function renderNode(node: RichTextNode, key: number): ReactNode {
   if (node.type === "tableRow")
     return <tr key={key}>{renderChildren(node)}</tr>;
   if (node.type === "tableHeader")
-    return <th key={key}>{renderChildren(node)}</th>;
+    return (
+      <th key={key} scope="col">
+        {renderChildren(node)}
+      </th>
+    );
   if (node.type === "tableCell")
     return <td key={key}>{renderChildren(node)}</td>;
   if (node.type === "callout")
     return (
-      <aside key={key} className="rich-text-callout">
+      <aside key={key} aria-label="Callout" className="rich-text-callout">
         {renderChildren(node)}
       </aside>
     );

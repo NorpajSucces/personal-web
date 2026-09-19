@@ -38,6 +38,7 @@ function isUniqueViolation(error: unknown): boolean {
 function revalidateArticleSurfaces(slugs: string[]) {
   revalidatePath("/");
   revalidatePath("/articles");
+  revalidatePath("/sitemap.xml");
   revalidatePath("/admin/articles");
   for (const slug of new Set(slugs.filter(Boolean)))
     revalidatePath(`/articles/${slug}`);

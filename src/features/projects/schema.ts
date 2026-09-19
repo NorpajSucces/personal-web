@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import { isSafeHttpUrl } from "../../lib/url.ts";
+import { isValidMediaPath } from "../media/config.ts";
+
 import { normalizeProjectSlug } from "./slug.ts";
 
 export const projectStatuses = ["in_progress", "completed"] as const;
@@ -40,11 +43,19 @@ const requiredText = z
 const optionalUrl = z
   .string()
   .trim()
-  .refine(
-    (value) =>
-      value === "" || z.url({ protocol: /^https?$/ }).safeParse(value).success,
-    { message: "Enter a valid http:// or https:// URL or leave this empty." },
-  );
+  .refine((value) => value === "" || isSafeHttpUrl(value), {
+    message: "Enter a valid http:// or https:// URL or leave this empty.",
+  });
+
+const optionalMediaPath = z.preprocess(
+  (value) => value ?? "",
+  z
+    .string()
+    .trim()
+    .refine((value) => value === "" || isValidMediaPath(value), {
+      message: "Upload a valid image or leave this empty.",
+    }),
+);
 
 export const projectFormSchema = z.object({
   name: requiredSingleLine,
@@ -67,6 +78,7 @@ export const projectFormSchema = z.object({
   visibility: z.enum(visibilityOptions),
   githubUrl: optionalUrl,
   liveDemoUrl: optionalUrl,
+  screenshotPath: optionalMediaPath,
 });
 
 export type ProjectFormValues = z.infer<typeof projectFormSchema>;
@@ -93,5 +105,6 @@ export function parseProjectFormData(formData: FormData) {
     visibility: formData.get("visibility"),
     githubUrl: formData.get("githubUrl"),
     liveDemoUrl: formData.get("liveDemoUrl"),
+    screenshotPath: formData.get("screenshotPath"),
   });
 }

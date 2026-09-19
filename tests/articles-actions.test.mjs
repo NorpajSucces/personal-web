@@ -233,6 +233,7 @@ test("Article edit preserves an intentional slug and revalidates old and new URL
   assert.equal(update.values.slug, "intentional-slug");
   assert(calls.some((call) => call.path === "/articles/original-article"));
   assert(calls.some((call) => call.path === "/articles/intentional-slug"));
+  assert(calls.some((call) => call.path === "/sitemap.xml"));
 });
 
 test("Article delete targets only the Article and redirects safely", async () => {

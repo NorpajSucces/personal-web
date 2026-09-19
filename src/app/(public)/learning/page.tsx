@@ -10,10 +10,14 @@ import {
   getPublicLearningEntries,
   getPublicLearningTopics,
 } from "@/features/learning/queries";
+import { createPublicMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPublicMetadata({
   title: "Learning",
-};
+  description:
+    "A chronological map of exploration, learning, and practice across any domain.",
+  path: "/learning",
+});
 
 export default async function LearningPage({
   searchParams,

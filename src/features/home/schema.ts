@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { isSafeHttpUrl } from "../../lib/url.ts";
+
 const requiredText = z
   .string()
   .refine((value) => value.trim().length > 0, {
@@ -18,11 +20,9 @@ const optionalEmail = z
 const optionalUrl = z
   .string()
   .trim()
-  .refine(
-    (value) =>
-      value === "" || z.url({ protocol: /^https?$/ }).safeParse(value).success,
-    { message: "Enter a valid http:// or https:// URL or leave this empty." },
-  );
+  .refine((value) => value === "" || isSafeHttpUrl(value), {
+    message: "Enter a valid http:// or https:// URL or leave this empty.",
+  });
 
 export const homeContentSchema = z.object({
   heroTitle: requiredText,

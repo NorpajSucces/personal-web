@@ -69,7 +69,7 @@ const database = drizzle(async (query, params) => {
 });
 
 mock.module("../src/db/index.ts", { namedExports: { db: database } });
-const { getPublicNoteBySlug, getPublicNotes } =
+const { getPublicNoteBySlug, getPublicNotes, getPublicNoteSitemapEntries } =
   await import("../src/features/notes/queries.ts");
 
 beforeEach(() => {
@@ -125,4 +125,11 @@ test("public Note detail attaches shared Topics and Tags", async () => {
   assert.deepEqual(note.tags, [
     { id: tagId, name: "Reflection", slug: "reflection" },
   ]);
+});
+
+test("Note sitemap query selects only Published and Public records", async () => {
+  await getPublicNoteSitemapEntries();
+  assert.match(calls[0].query, /"publication_status" = \$1/);
+  assert.match(calls[0].query, /"visibility" = \$2/);
+  assert.deepEqual(calls[0].params, ["published", "public"]);
 });

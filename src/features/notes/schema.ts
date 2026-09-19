@@ -5,6 +5,7 @@ import {
   parseRichTextJson,
   type RichTextDocument,
 } from "../rich-text/contract.ts";
+import { isValidMediaPath } from "../media/config.ts";
 
 import { normalizeNoteSlug } from "./slug.ts";
 
@@ -49,6 +50,16 @@ const richTextSchema = z.string().transform((value, context) => {
 
 const idSelection = z.array(z.uuid()).transform((ids) => [...new Set(ids)]);
 
+const optionalMediaPath = z.preprocess(
+  (value) => value ?? "",
+  z
+    .string()
+    .trim()
+    .refine((value) => value === "" || isValidMediaPath(value), {
+      message: "Upload a valid image or leave this empty.",
+    }),
+);
+
 export const noteFormSchema = z.object({
   title: requiredSingleLine,
   slug: z
@@ -69,6 +80,7 @@ export const noteFormSchema = z.object({
   visibility: z.enum(noteVisibilityOptions),
   topicIds: idSelection,
   tagIds: idSelection,
+  coverImagePath: optionalMediaPath,
 });
 
 export type NoteFormValues = z.infer<typeof noteFormSchema>;
@@ -83,7 +95,8 @@ export type NoteFormField =
   | "publicationStatus"
   | "visibility"
   | "topicIds"
-  | "tagIds";
+  | "tagIds"
+  | "coverImagePath";
 export type NoteFormState = {
   status: "idle" | "success" | "error";
   message: string;
@@ -105,5 +118,6 @@ export function parseNoteFormData(formData: FormData) {
     visibility: formData.get("visibility"),
     topicIds: formData.getAll("topicIds"),
     tagIds: formData.getAll("tagIds"),
+    coverImagePath: formData.get("coverImagePath"),
   });
 }

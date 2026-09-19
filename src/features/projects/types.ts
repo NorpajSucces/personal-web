@@ -13,6 +13,7 @@ export type ProjectSummary = Pick<
   | "visibility"
   | "githubUrl"
   | "liveDemoUrl"
+  | "screenshotPath"
   | "createdAt"
   | "updatedAt"
 >;

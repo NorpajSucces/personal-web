@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useActionState, useEffect, useRef, useState } from "react";
 
+import { MediaUploadField } from "@/features/media/media-upload-field";
+
 import { generateProjectSlug } from "./slug";
 import {
   initialProjectFormState,
@@ -20,6 +22,7 @@ export type ProjectFormInitialValues = {
   visibility: "private" | "public";
   githubUrl: string;
   liveDemoUrl: string;
+  screenshotPath: string;
 };
 
 type ProjectFormProps = {
@@ -29,7 +32,6 @@ type ProjectFormProps = {
   ) => Promise<ProjectFormState>;
   initialValues: ProjectFormInitialValues;
   mode: "create" | "edit";
-  hasScreenshot?: boolean;
   hasCaseStudy?: boolean;
 };
 
@@ -60,13 +62,13 @@ export const newProjectValues: ProjectFormInitialValues = {
   visibility: "private",
   githubUrl: "",
   liveDemoUrl: "",
+  screenshotPath: "",
 };
 
 export function ProjectForm({
   action,
   initialValues,
   mode,
-  hasScreenshot = false,
   hasCaseStudy = false,
 }: ProjectFormProps) {
   const [values, setValues] = useState(initialValues);
@@ -342,23 +344,30 @@ export function ProjectForm({
         </div>
       </fieldset>
 
-      {mode === "edit" ? (
-        <section
-          aria-labelledby="media-state-title"
-          className="rounded-lg border bg-card p-5 sm:p-6"
-        >
-          <h2 id="media-state-title" className="font-serif text-2xl">
-            Deferred content
-          </h2>
-          <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-2">
-            <div>
-              <dt className="font-medium">Screenshot</dt>
-              <dd className="mt-1 text-muted-foreground">
-                {hasScreenshot
-                  ? "An existing screenshot reference is preserved."
-                  : "No screenshot. Upload support will be added with shared media."}
-              </dd>
-            </div>
+      <section
+        aria-labelledby="media-title"
+        className="rounded-lg border bg-card p-5 sm:p-6"
+      >
+        <h2 id="media-title" className="font-serif text-2xl">
+          Media
+        </h2>
+        <div className="mt-4">
+          <MediaUploadField
+            category="project"
+            label="project screenshot"
+            name="screenshotPath"
+            value={values.screenshotPath}
+            onChange={(screenshotPath) =>
+              setValues((current) => ({ ...current, screenshotPath }))
+            }
+          />
+          <FieldError
+            field="screenshotPath"
+            error={state.errors?.screenshotPath?.[0]}
+          />
+        </div>
+        {mode === "edit" ? (
+          <dl className="mt-5 text-sm">
             <div>
               <dt className="font-medium">Case study</dt>
               <dd className="mt-1 text-muted-foreground">
@@ -368,8 +377,8 @@ export function ProjectForm({
               </dd>
             </div>
           </dl>
-        </section>
-      ) : null}
+        ) : null}
+      </section>
 
       <div className="flex flex-wrap items-center gap-4">
         <button

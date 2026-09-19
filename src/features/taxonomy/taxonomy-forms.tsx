@@ -125,13 +125,17 @@ export function DeleteTaxonomyButton({
       <dialog
         ref={dialogRef}
         aria-labelledby={`delete-${kind}-${id}`}
+        aria-describedby={`delete-${kind}-${id}-description`}
         className="m-auto w-[min(28rem,calc(100%-2rem))] rounded-lg border bg-card p-0 text-card-foreground shadow-xl backdrop:bg-black/60"
       >
         <div className="p-6">
           <h3 id={`delete-${kind}-${id}`} className="font-serif text-2xl">
             Delete {name}?
           </h3>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          <p
+            id={`delete-${kind}-${id}-description`}
+            className="mt-3 text-sm leading-6 text-muted-foreground"
+          >
             This removes the shared {kind} and its content relationships. It
             does not delete any Article, Note, or Learning entry.
           </p>

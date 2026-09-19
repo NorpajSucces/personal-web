@@ -24,13 +24,17 @@ export function DeleteNoteButton({ id, title }: { id: string; title: string }) {
       <dialog
         ref={dialogRef}
         aria-labelledby={`delete-note-${id}`}
+        aria-describedby={`delete-note-${id}-description`}
         className="m-auto w-[min(28rem,calc(100%-2rem))] rounded-lg border bg-card p-0 text-card-foreground shadow-xl backdrop:bg-black/60"
       >
         <div className="p-6">
           <h2 id={`delete-note-${id}`} className="font-serif text-2xl">
             Delete {title}?
           </h2>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          <p
+            id={`delete-note-${id}-description`}
+            className="mt-3 text-sm leading-6 text-muted-foreground"
+          >
             This permanently deletes the Note and its Topic/Tag links. Shared
             Topics and Tags are kept. Existing media, if any, is not removed.
           </p>

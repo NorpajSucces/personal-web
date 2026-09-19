@@ -126,6 +126,16 @@
     line-height: 1.75;
   }
 
+  .rich-text-editor-content:focus-visible,
+  .rich-text-content [role="region"]:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  .rich-text-editor-content[aria-invalid="true"] {
+    box-shadow: inset 0 0 0 1px var(--destructive);
+  }
+
   .rich-text-editor-content > * + *,
   .rich-text-content > * + * {
     margin-top: 1.25rem;
@@ -189,6 +199,19 @@
     margin-block: 2.5rem;
     border: 0;
     border-top: 1px solid var(--border);
+  }
+
+  .rich-text-editor-content img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--muted);
+  }
+
+  .rich-text-editor-content img.ProseMirror-selectednode {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
   }
 
   .rich-text-editor-content table,

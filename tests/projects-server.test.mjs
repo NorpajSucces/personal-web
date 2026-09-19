@@ -89,8 +89,11 @@ mock.module("next/navigation", {
 
 const { createProject, deleteProject, updateProject } =
   await import("../src/features/projects/actions.ts");
-const { getPublicProjectBySlug, getPublicProjects } =
-  await import("../src/features/projects/queries.ts");
+const {
+  getPublicProjectBySlug,
+  getPublicProjects,
+  getPublicProjectSitemapEntries,
+} = await import("../src/features/projects/queries.ts");
 const { initialProjectFormState } =
   await import("../src/features/projects/schema.ts");
 
@@ -154,6 +157,7 @@ test("authorized create uses safe defaults from the form and redirects to immuta
       "revalidate",
       "revalidate",
       "revalidate",
+      "revalidate",
       "redirect",
     ],
   );
@@ -165,6 +169,7 @@ test("authorized create uses safe defaults from the form and redirects to immuta
     type: "redirect",
     path: `/admin/projects/${id}/edit`,
   });
+  assert(calls.some((call) => call.path === "/sitemap.xml"));
 });
 
 test("duplicate slug returns a useful field error without attempting insert", async () => {
@@ -245,6 +250,14 @@ test("public detail applies Published and Public filters together with the guess
     "guessed-private-project",
     1,
   ]);
+});
+
+test("Project sitemap query selects only Published and Public records", async () => {
+  responses = [[]];
+  await getPublicProjectSitemapEntries();
+  assert.match(calls[0].query, /"publication_status" = \$1/);
+  assert.match(calls[0].query, /"visibility" = \$2/);
+  assert.deepEqual(calls[0].params, ["published", "public"]);
 });
 
 test("database errors never disclose diagnostics through mutation state", async () => {

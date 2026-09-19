@@ -34,13 +34,17 @@ export function DeleteExperienceButton({
       <dialog
         ref={dialogRef}
         aria-labelledby={`delete-experience-${id}`}
+        aria-describedby={`delete-experience-${id}-description`}
         className="m-auto w-[min(28rem,calc(100%-2rem))] rounded-lg border bg-card p-0 text-card-foreground shadow-xl backdrop:bg-black/60"
       >
         <div className="p-6">
           <h2 id={`delete-experience-${id}`} className="font-serif text-2xl">
             Delete {label}?
           </h2>
-          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          <p
+            id={`delete-experience-${id}-description`}
+            className="mt-3 text-sm leading-6 text-muted-foreground"
+          >
             This permanently removes the Experience from Home.
           </p>
           <form action={formAction} className="mt-6 flex flex-wrap gap-3">

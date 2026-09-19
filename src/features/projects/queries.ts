@@ -17,6 +17,7 @@ const summaryColumns = {
   visibility: projects.visibility,
   githubUrl: projects.githubUrl,
   liveDemoUrl: projects.liveDemoUrl,
+  screenshotPath: projects.screenshotPath,
   createdAt: projects.createdAt,
   updatedAt: projects.updatedAt,
 };
@@ -64,6 +65,7 @@ export async function createProjectRecord(values: ProjectFormValues) {
       ...values,
       githubUrl: values.githubUrl || null,
       liveDemoUrl: values.liveDemoUrl || null,
+      screenshotPath: values.screenshotPath || null,
     })
     .returning({ id: projects.id });
   return project;
@@ -80,6 +82,7 @@ export async function updateProjectRecord(
       ...values,
       githubUrl: values.githubUrl || null,
       liveDemoUrl: values.liveDemoUrl || null,
+      screenshotPath: values.screenshotPath || null,
       updatedAt: new Date(),
     })
     .where(eq(projects.id, id))
@@ -119,4 +122,13 @@ export async function getPublicProjectBySlug(slug: string) {
     .where(and(publicCondition, eq(projects.slug, slug)))
     .limit(1);
   return project;
+}
+
+export async function getPublicProjectSitemapEntries() {
+  const db = await getDatabase();
+  return db
+    .select({ slug: projects.slug, updatedAt: projects.updatedAt })
+    .from(projects)
+    .where(publicCondition)
+    .orderBy(desc(projects.updatedAt));
 }

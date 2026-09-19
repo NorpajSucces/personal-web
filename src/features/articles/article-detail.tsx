@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Container } from "@/components/shared/container";
 import { RichTextRenderer } from "@/features/rich-text/renderer";
+import { MediaImage } from "@/features/media/media-image";
 
 import { formatArticleDate } from "./article-card";
 import type { ArticleWithTaxonomy } from "./types";
@@ -40,6 +41,13 @@ export function ArticleDetail({
         <p className="mt-7 whitespace-pre-line text-lg leading-8 wrap-anywhere text-muted-foreground">
           {article.excerpt}
         </p>
+        {article.coverImagePath ? (
+          <MediaImage
+            path={article.coverImagePath}
+            alt=""
+            className="mt-8 h-auto w-full rounded-lg border bg-muted object-cover"
+          />
+        ) : null}
         {article.topics.length || article.tags.length ? (
           <div className="mt-7 space-y-3 border-y py-5 text-sm">
             {article.topics.length ? (

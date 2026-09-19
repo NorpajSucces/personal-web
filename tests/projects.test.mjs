@@ -21,6 +21,7 @@ const validProject = {
   visibility: "private",
   githubUrl: "https://github.com/example/project",
   liveDemoUrl: "",
+  screenshotPath: "",
 };
 
 test("a valid Project is normalized and accepted", () => {

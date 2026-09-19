@@ -3,8 +3,9 @@
 import type { Editor } from "@tiptap/core";
 import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { uploadMedia } from "@/features/media/actions";
 import { isSafeHttpUrl, type RichTextDocument } from "./contract";
 import { createRichTextExtensions } from "./extensions";
 
@@ -17,7 +18,7 @@ type ToolbarButtonProps = {
 };
 
 function ToolbarButton({
-  active = false,
+  active,
   children,
   disabled = false,
   label,
@@ -90,9 +91,15 @@ const slashCommands = [
 ] as const;
 
 export function RichTextEditor({
+  ariaDescribedBy,
+  ariaInvalid = false,
+  ariaLabel = "Rich text content",
   value,
   onChange,
 }: {
+  ariaDescribedBy?: string;
+  ariaInvalid?: boolean;
+  ariaLabel?: string;
   value: RichTextDocument;
   onChange: (value: RichTextDocument) => void;
 }) {
@@ -100,6 +107,9 @@ export function RichTextEditor({
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [linkError, setLinkError] = useState("");
+  const [imageMessage, setImageMessage] = useState("");
+  const [imageUploading, setImageUploading] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     extensions: createRichTextExtensions(),
     content: value,
@@ -107,7 +117,9 @@ export function RichTextEditor({
     editorProps: {
       attributes: {
         class: "rich-text-editor-content",
-        "aria-label": "Article content",
+        role: "textbox",
+        "aria-label": ariaLabel,
+        "aria-multiline": "true",
       },
     },
     onUpdate({ editor: currentEditor }) {
@@ -149,14 +161,59 @@ export function RichTextEditor({
     }),
   });
 
+  useEffect(() => {
+    if (!editor) return;
+    const element = editor.view.dom;
+    element.setAttribute("aria-label", ariaLabel);
+    element.setAttribute("aria-invalid", String(ariaInvalid));
+    if (ariaDescribedBy)
+      element.setAttribute("aria-describedby", ariaDescribedBy);
+    else element.removeAttribute("aria-describedby");
+  }, [ariaDescribedBy, ariaInvalid, ariaLabel, editor]);
+
   if (!editor || !state) {
     return (
-      <div className="min-h-64 rounded-lg border bg-background p-4 text-sm text-muted-foreground">
+      <div
+        role="status"
+        className="min-h-64 rounded-lg border bg-background p-4 text-sm text-muted-foreground"
+      >
         Loading editor…
       </div>
     );
   }
   const currentEditor = editor;
+
+  async function insertImage(file: File | undefined) {
+    if (!file || imageUploading) return;
+    setImageUploading(true);
+    setImageMessage("");
+    const formData = new FormData();
+    formData.set("category", "editor");
+    formData.set("file", file);
+    try {
+      const result = await uploadMedia(formData);
+      setImageMessage(result.message);
+      if (result.status === "success" && result.path) {
+        currentEditor
+          .chain()
+          .focus()
+          .insertContent({
+            type: "image",
+            attrs: { path: result.path, alt: file.name, title: null },
+          })
+          .run();
+      }
+    } catch {
+      setImageMessage("The image could not be uploaded. Try again.");
+    } finally {
+      setImageUploading(false);
+    }
+  }
+
+  function closeLinkEditor() {
+    setLinkOpen(false);
+    currentEditor.commands.focus();
+  }
 
   function applyLink() {
     const href = linkUrl.trim();
@@ -182,7 +239,34 @@ export function RichTextEditor({
   }
 
   return (
-    <div className="relative rounded-lg border bg-background">
+    <div
+      className="relative rounded-lg border bg-background"
+      onDragOver={(event) => {
+        if (
+          Array.from(event.dataTransfer.items).some(
+            (item) => item.kind === "file",
+          )
+        ) {
+          event.preventDefault();
+        }
+      }}
+      onDrop={(event) => {
+        const file = Array.from(event.dataTransfer.files).find((item) =>
+          item.type.startsWith("image/"),
+        );
+        if (!file) return;
+        event.preventDefault();
+        void insertImage(file);
+      }}
+      onPasteCapture={(event) => {
+        const file = Array.from(event.clipboardData.files).find((item) =>
+          item.type.startsWith("image/"),
+        );
+        if (!file) return;
+        event.preventDefault();
+        void insertImage(file);
+      }}
+    >
       <div
         role="toolbar"
         aria-label="Rich text formatting"
@@ -298,6 +382,23 @@ export function RichTextEditor({
           Table
         </ToolbarButton>
         <ToolbarButton
+          disabled={imageUploading}
+          label="Insert image"
+          onClick={() => imageInputRef.current?.click()}
+        >
+          {imageUploading ? "Uploading…" : "Image"}
+        </ToolbarButton>
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/avif,image/gif,image/jpeg,image/png,image/webp"
+          className="sr-only"
+          onChange={(event) => {
+            void insertImage(event.target.files?.[0]);
+            event.target.value = "";
+          }}
+        />
+        <ToolbarButton
           disabled={!state.canUndo}
           label="Undo"
           onClick={() => editor.chain().focus().undo().run()}
@@ -314,7 +415,11 @@ export function RichTextEditor({
       </div>
 
       {linkOpen ? (
-        <div className="flex flex-wrap items-start gap-2 border-b bg-card p-3">
+        <div
+          role="group"
+          aria-label="Link settings"
+          className="flex flex-wrap items-start gap-2 border-b bg-card p-3"
+        >
           <div className="min-w-52 flex-1">
             <label htmlFor="rich-text-link" className="sr-only">
               Link URL
@@ -333,7 +438,7 @@ export function RichTextEditor({
                   event.preventDefault();
                   applyLink();
                 }
-                if (event.key === "Escape") setLinkOpen(false);
+                if (event.key === "Escape") closeLinkEditor();
               }}
             />
             {linkError ? (
@@ -367,7 +472,7 @@ export function RichTextEditor({
           <button
             type="button"
             className="min-h-10 rounded-md px-3 text-sm text-muted-foreground"
-            onClick={() => setLinkOpen(false)}
+            onClick={closeLinkEditor}
           >
             Cancel
           </button>
@@ -449,7 +554,11 @@ export function RichTextEditor({
       <EditorContent editor={editor} />
 
       {slashOpen ? (
-        <div className="absolute right-3 left-3 z-20 mt-1 max-h-72 overflow-y-auto rounded-lg border bg-popover p-2 shadow-xl sm:right-auto sm:w-80">
+        <div
+          role="region"
+          aria-label="Insert block commands"
+          className="absolute right-3 left-3 z-20 mt-1 max-h-72 overflow-y-auto rounded-lg border bg-popover p-2 shadow-xl sm:right-auto sm:w-80"
+        >
           <p className="px-2 py-1 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
             Insert block
           </p>
@@ -474,8 +583,8 @@ export function RichTextEditor({
       ) : null}
 
       <p className="border-t px-3 py-2 text-xs text-muted-foreground">
-        Type / to insert a block. Images will be added with the shared media
-        workflow.
+        {imageMessage ||
+          "Type / to insert a block. Drop or paste an image anywhere in the editor."}
       </p>
     </div>
   );

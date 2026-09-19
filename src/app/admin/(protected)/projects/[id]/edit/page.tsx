@@ -32,7 +32,6 @@ export default async function EditProjectPage({
       <ProjectForm
         action={action}
         mode="edit"
-        hasScreenshot={Boolean(project.screenshotPath)}
         hasCaseStudy={Boolean(project.caseStudy)}
         initialValues={{
           name: project.name,
@@ -44,6 +43,7 @@ export default async function EditProjectPage({
           visibility: project.visibility,
           githubUrl: project.githubUrl ?? "",
           liveDemoUrl: project.liveDemoUrl ?? "",
+          screenshotPath: project.screenshotPath ?? "",
         }}
       />
     </>

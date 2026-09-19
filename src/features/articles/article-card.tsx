@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { SurfaceCard } from "@/components/shared/surface-card";
+import { MediaImage } from "@/features/media/media-image";
 
 import type { ArticleSummary } from "./types";
 
@@ -11,6 +12,14 @@ export function formatArticleDate(date: Date | null) {
 export function ArticleCard({ article }: { article: ArticleSummary }) {
   return (
     <SurfaceCard className="flex h-full min-w-0 flex-col">
+      {article.coverImagePath ? (
+        <MediaImage
+          path={article.coverImagePath}
+          alt=""
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="mb-5 h-auto w-full rounded-md border bg-muted object-cover"
+        />
+      ) : null}
       <p className="text-xs font-semibold tracking-[0.15em] text-primary uppercase">
         {formatArticleDate(article.publishedAt)}
       </p>

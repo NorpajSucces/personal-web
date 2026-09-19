@@ -5,10 +5,13 @@ import { Container } from "@/components/shared/container";
 import { PageIntro } from "@/components/shared/page-intro";
 import { ProjectGrid } from "@/features/projects/project-card";
 import { getPublicProjects } from "@/features/projects/queries";
+import { createPublicMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPublicMetadata({
   title: "Projects",
-};
+  description: "Selected work, experiments, and engineering case studies.",
+  path: "/projects",
+});
 
 export default async function ProjectsPage() {
   await connection();

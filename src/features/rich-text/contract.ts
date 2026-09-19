@@ -1,3 +1,6 @@
+import { isSafeHttpUrl } from "../../lib/url.ts";
+import { isValidMediaPath } from "../media/config.ts";
+
 export type RichTextMark = {
   type: "bold" | "italic" | "strike" | "code" | "link";
   attrs?: Record<string, unknown>;
@@ -38,22 +41,13 @@ const allowedNodes = new Set([
   "tableHeader",
   "tableCell",
   "callout",
+  "image",
 ]);
 
 const allowedMarks = new Set(["bold", "italic", "strike", "code", "link"]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-export function isSafeHttpUrl(value: unknown): value is string {
-  if (typeof value !== "string") return false;
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
 }
 
 function isValidMark(value: unknown) {
@@ -85,6 +79,19 @@ function isValidNode(value: unknown, depth = 0): value is RichTextNode {
     const level = value.attrs.level;
     if (level !== 2 && level !== 3) return false;
   }
+  if (value.type === "image") {
+    if (!isRecord(value.attrs) || typeof value.attrs.path !== "string")
+      return false;
+    if (!isValidMediaPath(value.attrs.path)) return false;
+    if (value.attrs.alt !== undefined && typeof value.attrs.alt !== "string")
+      return false;
+    if (
+      value.attrs.title !== undefined &&
+      value.attrs.title !== null &&
+      typeof value.attrs.title !== "string"
+    )
+      return false;
+  }
   return true;
 }
 
@@ -96,6 +103,7 @@ export function isRichTextDocument(value: unknown): value is RichTextDocument {
 
 export function hasMeaningfulRichText(document: RichTextDocument) {
   function hasText(node: RichTextNode): boolean {
+    if (node.type === "image") return true;
     if (typeof node.text === "string" && node.text.trim().length > 0)
       return true;
     return node.content?.some(hasText) ?? false;
@@ -111,3 +119,5 @@ export function parseRichTextJson(value: string) {
     return null;
   }
 }
+
+export { isSafeHttpUrl };

@@ -9,10 +9,14 @@ import {
   getPublicArticles,
   getPublicArticleTaxonomy,
 } from "@/features/articles/queries";
+import { createPublicMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPublicMetadata({
   title: "Articles",
-};
+  description:
+    "Developed, long-form writing across technical and personal subjects.",
+  path: "/articles",
+});
 
 function filterHref(topic?: string, tag?: string) {
   const query = new URLSearchParams();

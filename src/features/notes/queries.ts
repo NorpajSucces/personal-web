@@ -19,6 +19,7 @@ const summaryColumns = {
   title: notes.title,
   slug: notes.slug,
   excerpt: notes.excerpt,
+  coverImagePath: notes.coverImagePath,
   publicationStatus: notes.publicationStatus,
   visibility: notes.visibility,
   publishedAt: notes.publishedAt,
@@ -136,6 +137,7 @@ export async function createNoteRecord(values: NoteFormValues) {
         slug: values.slug,
         excerpt: values.excerpt,
         content: values.content,
+        coverImagePath: values.coverImagePath || null,
         publicationStatus: values.publicationStatus,
         visibility: values.visibility,
         publishedAt: resolvePublishedAt(null, values.publicationStatus),
@@ -170,6 +172,7 @@ export async function updateNoteRecord(existing: Note, values: NoteFormValues) {
         slug: values.slug,
         excerpt: values.excerpt,
         content: values.content,
+        coverImagePath: values.coverImagePath || null,
         publicationStatus: values.publicationStatus,
         visibility: values.visibility,
         publishedAt,
@@ -256,6 +259,15 @@ export async function getPublicNoteBySlug(
     .limit(1);
   if (!note) return undefined;
   return (await attachTaxonomy([note]))[0];
+}
+
+export async function getPublicNoteSitemapEntries() {
+  const db = await getDatabase();
+  return db
+    .select({ slug: notes.slug, updatedAt: notes.updatedAt })
+    .from(notes)
+    .where(publicCondition)
+    .orderBy(desc(notes.updatedAt));
 }
 
 export async function getPublicNoteTaxonomy() {

@@ -9,10 +9,14 @@ import {
   getPublicNotes,
   getPublicNoteTaxonomy,
 } from "@/features/notes/queries";
+import { createPublicMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPublicMetadata({
   title: "Notes",
-};
+  description:
+    "Shorter observations, references, reflections, and evolving thoughts.",
+  path: "/notes",
+});
 
 function filterHref(topic?: string, tag?: string) {
   const query = new URLSearchParams();

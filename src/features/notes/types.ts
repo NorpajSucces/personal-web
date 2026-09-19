@@ -19,6 +19,7 @@ export type NoteSummary = Pick<
   | "title"
   | "slug"
   | "excerpt"
+  | "coverImagePath"
   | "publicationStatus"
   | "visibility"
   | "publishedAt"
