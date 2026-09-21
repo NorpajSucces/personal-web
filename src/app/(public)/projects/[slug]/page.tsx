@@ -4,10 +4,10 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 
 import { ProjectDetail } from "@/features/projects/project-detail";
-import { getPublicProjectBySlug } from "@/features/projects/queries";
+import { getCachedPublicProjectBySlug } from "@/lib/cache/public-queries";
 import { createNotFoundMetadata, createPublicMetadata } from "@/lib/seo";
 
-const getProject = cache(getPublicProjectBySlug);
+const getProject = cache(getCachedPublicProjectBySlug);
 
 export async function generateMetadata({
   params,

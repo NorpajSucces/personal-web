@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth/admin";
+import { invalidatePublicCache } from "@/lib/cache/invalidate-public";
+import { PUBLIC_CACHE_TAGS } from "@/lib/cache/public-tags";
 
 import {
   createNoteRecord,
@@ -40,6 +42,7 @@ function revalidateNoteSurfaces(slugs: string[]) {
   revalidatePath("/notes");
   revalidatePath("/sitemap.xml");
   revalidatePath("/admin/notes");
+  invalidatePublicCache(PUBLIC_CACHE_TAGS.notes);
   for (const slug of new Set(slugs.filter(Boolean)))
     revalidatePath(`/notes/${slug}`);
 }

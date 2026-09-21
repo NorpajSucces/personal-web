@@ -179,7 +179,7 @@ test("Admin and dynamic public routes retain their indexing boundaries", async (
   assert.match(adminLayout, /robots: noIndexRobots/);
   assert.match(proxy, /private, no-cache, no-store/);
   for (const source of [projectPage, articlePage, notePage]) {
-    assert.match(source, /getPublic[A-Za-z]+BySlug/);
+    assert.match(source, /get(?:Cached)?Public[A-Za-z]+BySlug/);
     assert.match(source, /createNotFoundMetadata\(\)/);
   }
 });

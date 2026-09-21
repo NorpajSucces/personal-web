@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import { Container } from "@/components/shared/container";
 import { PageIntro } from "@/components/shared/page-intro";
 import { ProjectGrid } from "@/features/projects/project-card";
-import { getPublicProjects } from "@/features/projects/queries";
+import { getCachedPublicProjects } from "@/lib/cache/public-queries";
 import { createPublicMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPublicMetadata({
@@ -15,7 +15,7 @@ export const metadata: Metadata = createPublicMetadata({
 
 export default async function ProjectsPage() {
   await connection();
-  const projects = await getPublicProjects();
+  const projects = await getCachedPublicProjects();
   return (
     <>
       <PageIntro

@@ -4,10 +4,10 @@ import { connection } from "next/server";
 import { cache } from "react";
 
 import { ArticleDetail } from "@/features/articles/article-detail";
-import { getPublicArticleBySlug } from "@/features/articles/queries";
+import { getCachedPublicArticleBySlug } from "@/lib/cache/public-queries";
 import { createNotFoundMetadata, createPublicMetadata } from "@/lib/seo";
 
-const getArticle = cache(getPublicArticleBySlug);
+const getArticle = cache(getCachedPublicArticleBySlug);
 
 export async function generateMetadata({
   params,

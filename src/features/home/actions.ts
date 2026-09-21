@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth/admin";
+import { invalidatePublicCache } from "@/lib/cache/invalidate-public";
+import { PUBLIC_CACHE_TAGS } from "@/lib/cache/public-tags";
 
 import { upsertHomeContent } from "./queries";
 import { homeContentSchema, type HomeFormState } from "./schema";
@@ -34,5 +36,6 @@ export async function saveHomeContent(
 
   revalidatePath("/");
   revalidatePath("/admin/home");
+  invalidatePublicCache(PUBLIC_CACHE_TAGS.home);
   return { status: "success", message: "Home content saved." };
 }

@@ -7,9 +7,9 @@ import { PageIntro } from "@/components/shared/page-intro";
 import { SurfaceCard } from "@/components/shared/surface-card";
 import { LearningTimeline } from "@/features/learning/learning-timeline";
 import {
-  getPublicLearningEntries,
-  getPublicLearningTopics,
-} from "@/features/learning/queries";
+  getCachedPublicLearningEntries,
+  getCachedPublicLearningTopics,
+} from "@/lib/cache/public-queries";
 import { createPublicMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPublicMetadata({
@@ -27,8 +27,8 @@ export default async function LearningPage({
   await connection();
   const filters = await searchParams;
   const [topics, entries] = await Promise.all([
-    getPublicLearningTopics(),
-    getPublicLearningEntries({ topic: filters.topic }),
+    getCachedPublicLearningTopics(),
+    getCachedPublicLearningEntries({ topic: filters.topic }),
   ]);
   return (
     <>

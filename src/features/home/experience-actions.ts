@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth/admin";
+import { invalidatePublicCache } from "@/lib/cache/invalidate-public";
+import { PUBLIC_CACHE_TAGS } from "@/lib/cache/public-tags";
 
 import {
   createExperienceRecord,
@@ -21,6 +23,7 @@ import {
 function revalidateExperienceSurfaces() {
   revalidatePath("/");
   revalidatePath("/admin/home");
+  invalidatePublicCache(PUBLIC_CACHE_TAGS.home);
 }
 
 function fieldErrors(error: z.ZodError<ExperienceFormValues>) {

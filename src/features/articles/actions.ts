@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth/admin";
+import { invalidatePublicCache } from "@/lib/cache/invalidate-public";
+import { PUBLIC_CACHE_TAGS } from "@/lib/cache/public-tags";
 
 import {
   createArticleRecord,
@@ -40,6 +42,7 @@ function revalidateArticleSurfaces(slugs: string[]) {
   revalidatePath("/articles");
   revalidatePath("/sitemap.xml");
   revalidatePath("/admin/articles");
+  invalidatePublicCache(PUBLIC_CACHE_TAGS.articles);
   for (const slug of new Set(slugs.filter(Boolean)))
     revalidatePath(`/articles/${slug}`);
 }

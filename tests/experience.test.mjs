@@ -144,7 +144,7 @@ test("Home follows the refined sequence without content-preview queries", () => 
     assert(position > previous, `${marker} is out of order or missing`);
     previous = position;
   }
-  assert.match(home, /getPublicProjects\(3\)/);
+  assert.match(home, /getCachedPublicProjects\(3\)/);
   assert.match(home, /size="home"/);
   assert.match(home, /00 \/ Personal digital home/);
   for (const eyebrow of [

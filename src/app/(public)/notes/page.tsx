@@ -6,9 +6,9 @@ import { Container } from "@/components/shared/container";
 import { PageIntro } from "@/components/shared/page-intro";
 import { NoteGrid } from "@/features/notes/note-card";
 import {
-  getPublicNotes,
-  getPublicNoteTaxonomy,
-} from "@/features/notes/queries";
+  getCachedPublicNotes,
+  getCachedPublicNoteTaxonomy,
+} from "@/lib/cache/public-queries";
 import { createPublicMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPublicMetadata({
@@ -34,8 +34,8 @@ export default async function NotesPage({
   await connection();
   const filters = await searchParams;
   const [{ topics, tags }, notes] = await Promise.all([
-    getPublicNoteTaxonomy(),
-    getPublicNotes({ topic: filters.topic, tag: filters.tag }),
+    getCachedPublicNoteTaxonomy(),
+    getCachedPublicNotes({ topic: filters.topic, tag: filters.tag }),
   ]);
   return (
     <>

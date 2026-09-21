@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { requireAdmin } from "@/lib/auth/admin";
+import { invalidatePublicCache } from "@/lib/cache/invalidate-public";
+import { PUBLIC_CACHE_TAGS } from "@/lib/cache/public-tags";
 
 import {
   createLearningEntryRecord,
@@ -28,6 +30,7 @@ function revalidateLearningSurfaces() {
   revalidatePath("/");
   revalidatePath("/learning");
   revalidatePath("/admin/learning");
+  invalidatePublicCache(PUBLIC_CACHE_TAGS.learning);
 }
 
 async function validateLearningInput(

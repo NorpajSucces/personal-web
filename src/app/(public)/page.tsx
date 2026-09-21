@@ -5,19 +5,21 @@ import { Section } from "@/components/shared/section";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { ContactForm } from "@/features/contact/contact-form";
 import { ExperienceList } from "@/features/home/experience-list";
-import { getExperiences } from "@/features/home/experience-queries";
 import { HomeProjectList } from "@/features/home/home-project-list";
-import { getHomeContent } from "@/features/home/queries";
 import { techToolGroups } from "@/features/home/tech-tools";
-import { getPublicProjects } from "@/features/projects/queries";
+import {
+  getCachedExperiences,
+  getCachedHomeContent,
+  getCachedPublicProjects,
+} from "@/lib/cache/public-queries";
 import { getSafeEmailHref, getSafeHttpUrl } from "@/lib/url";
 
 export default async function HomePage() {
   await connection();
   const [content, experiences, latestProjects] = await Promise.all([
-    getHomeContent(),
-    getExperiences(),
-    getPublicProjects(3),
+    getCachedHomeContent(),
+    getCachedExperiences(),
+    getCachedPublicProjects(3),
   ]);
   const contactLinks: Array<{
     label: string;

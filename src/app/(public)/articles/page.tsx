@@ -6,9 +6,9 @@ import { Container } from "@/components/shared/container";
 import { PageIntro } from "@/components/shared/page-intro";
 import { ArticleGrid } from "@/features/articles/article-card";
 import {
-  getPublicArticles,
-  getPublicArticleTaxonomy,
-} from "@/features/articles/queries";
+  getCachedPublicArticles,
+  getCachedPublicArticleTaxonomy,
+} from "@/lib/cache/public-queries";
 import { createPublicMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPublicMetadata({
@@ -34,8 +34,8 @@ export default async function ArticlesPage({
   await connection();
   const filters = await searchParams;
   const [{ topics, tags }, articles] = await Promise.all([
-    getPublicArticleTaxonomy(),
-    getPublicArticles({ topic: filters.topic, tag: filters.tag }),
+    getCachedPublicArticleTaxonomy(),
+    getCachedPublicArticles({ topic: filters.topic, tag: filters.tag }),
   ]);
   return (
     <>
