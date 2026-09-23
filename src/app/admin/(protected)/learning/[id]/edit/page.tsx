@@ -2,15 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { updateLearningEntry } from "@/features/learning/actions";
-import {
-  dateInputValue,
-  LearningForm,
-} from "@/features/learning/learning-form";
+import { LearningForm } from "@/features/learning/learning-form";
 import {
   getAdminLearningEntryById,
   getLearningRelationOptions,
 } from "@/features/learning/queries";
 import { learningEntryIdSchema } from "@/features/learning/schema";
+import { dateInputValue } from "@/features/learning/status";
 import { getTaxonomyOptions } from "@/features/taxonomy/queries";
 import { requireAdmin } from "@/lib/auth/admin";
 

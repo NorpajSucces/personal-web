@@ -4,6 +4,7 @@ import test from "node:test";
 
 import { learningFormSchema } from "../src/features/learning/schema.ts";
 import {
+  dateInputValue,
   formatLearningDate,
   groupLearningEntriesByYear,
   learningStatusLabels,
@@ -40,6 +41,10 @@ test("valid Learning input normalizes copy, date, defaults, and relationships", 
 });
 
 test("Learning entries group chronologically by UTC year", () => {
+  assert.equal(
+    dateInputValue(new Date("2026-09-08T00:00:00.000Z")),
+    "2026-09-08",
+  );
   const groups = groupLearningEntriesByYear([
     { date: new Date("2026-09-08T00:00:00.000Z") },
     { date: new Date("2026-01-01T00:00:00.000Z") },
@@ -86,6 +91,25 @@ test("Learning statuses are stages with readable labels and no progress values",
   );
   assert.doesNotMatch(formSource, /percentage|proficiency|certificate/i);
   assert.doesNotMatch(formSource, /RichTextEditor|Tiptap/);
+});
+
+test("Learning edit formats its date on the server side of the component boundary", () => {
+  const editSource = readFileSync(
+    new URL(
+      "../src/app/admin/(protected)/learning/[id]/edit/page.tsx",
+      import.meta.url,
+    ),
+    "utf8",
+  );
+  const formSource = readFileSync(
+    new URL("../src/features/learning/learning-form.tsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    editSource,
+    /import \{ dateInputValue \} from "@\/features\/learning\/status"/,
+  );
+  assert.doesNotMatch(formSource, /export function dateInputValue/);
 });
 
 test("Learning has Topics and related entities but no Tags or public slug", () => {

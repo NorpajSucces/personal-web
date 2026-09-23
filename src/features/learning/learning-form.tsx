@@ -53,10 +53,6 @@ export const newLearningValues: LearningFormInitialValues = {
   projectIds: [],
 };
 
-export function dateInputValue(date: Date) {
-  return date.toISOString().slice(0, 10);
-}
-
 function FieldError({
   field,
   error,

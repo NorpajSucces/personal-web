@@ -24,6 +24,7 @@ export function AdminNavigation() {
         <li key={href}>
           <Link
             href={href}
+            prefetch={href === "/admin" || href === "/admin/home" ? true : null}
             aria-current={active ? "page" : undefined}
             className={cn(
               "flex min-h-11 items-center rounded-md px-3 text-sm transition-colors",

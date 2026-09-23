@@ -61,6 +61,7 @@ export function BottomNavigation() {
               <li className="min-w-0" key={item.href}>
                 <Link
                   href={item.href}
+                  prefetch={item.href === "/" ? true : null}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "relative z-10 flex h-11 min-w-0 items-center justify-center whitespace-nowrap rounded-lg px-0.5 text-[clamp(0.75rem,3.2vw,0.875rem)] font-medium transition-colors duration-150 motion-reduce:transition-none",

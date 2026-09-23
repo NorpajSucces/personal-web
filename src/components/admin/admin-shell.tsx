@@ -36,6 +36,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-3">
             <Link
               href="/"
+              prefetch={true}
               className="rounded-md py-3 text-sm text-muted-foreground hover:text-foreground"
             >
               View website

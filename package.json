@@ -9,7 +9,7 @@
     "db:generate": "drizzle-kit generate",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:auth": "node --test tests/auth.test.mjs",
+    "test:auth": "node --experimental-test-module-mocks --test tests/auth*.test.mjs",
     "test:home": "node --experimental-test-module-mocks --test tests/home*.test.mjs",
     "test:contact": "node --experimental-test-module-mocks --test tests/contact*.test.mjs",
     "test:experience": "node --experimental-test-module-mocks --test tests/experience*.test.mjs",

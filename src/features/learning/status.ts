@@ -9,6 +9,10 @@ export const learningStatusLabels: Record<
   practicing: "Practicing",
 };
 
+export function dateInputValue(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
 export function formatLearningDate(date: Date) {
   return date.toLocaleDateString("en", {
     dateStyle: "long",

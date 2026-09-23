@@ -21,10 +21,11 @@ export function getAdminUserId() {
 export const getCurrentAdmin = cache(async () => {
   const adminUserId = getAdminUserId();
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getClaims();
 
-  if (error || !isAdminIdentity(data.user?.id, adminUserId)) return null;
-  return data.user;
+  if (error || !data?.claims || !isAdminIdentity(data.claims.sub, adminUserId))
+    return null;
+  return data.claims;
 });
 
 export async function requireAdmin() {
