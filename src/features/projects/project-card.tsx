@@ -4,6 +4,7 @@ import { ExternalLink } from "@/components/shared/external-link";
 import { SurfaceCard } from "@/components/shared/surface-card";
 import { MediaImage } from "@/features/media/media-image";
 
+import { formatProjectPeriod } from "./period";
 import type { ProjectSummary } from "./types";
 
 export function projectStatusLabel(status: ProjectSummary["projectStatus"]) {
@@ -11,6 +12,12 @@ export function projectStatusLabel(status: ProjectSummary["projectStatus"]) {
 }
 
 export function ProjectCard({ project }: { project: ProjectSummary }) {
+  const period = formatProjectPeriod(
+    project.startPeriod,
+    project.endPeriod,
+    project.projectStatus,
+  );
+
   return (
     <SurfaceCard className="flex h-full min-w-0 flex-col">
       {project.screenshotPath ? (
@@ -34,6 +41,9 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
           {projectStatusLabel(project.projectStatus)}
         </span>
       </div>
+      {period ? (
+        <p className="mt-3 font-mono text-xs text-muted-foreground">{period}</p>
+      ) : null}
       <p className="mt-4 whitespace-pre-line text-sm leading-6 wrap-anywhere text-muted-foreground">
         {project.description}
       </p>

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, desc, eq, ne, sql } from "drizzle-orm";
 
 import { projects } from "@/db/schema/projects";
 
@@ -12,6 +12,8 @@ const summaryColumns = {
   slug: projects.slug,
   description: projects.description,
   technologies: projects.technologies,
+  startPeriod: projects.startPeriod,
+  endPeriod: projects.endPeriod,
   projectStatus: projects.projectStatus,
   publicationStatus: projects.publicationStatus,
   visibility: projects.visibility,
@@ -110,7 +112,10 @@ export async function getPublicProjects(limit?: number) {
     .select(summaryColumns)
     .from(projects)
     .where(publicCondition)
-    .orderBy(desc(projects.updatedAt));
+    .orderBy(
+      sql`coalesce(${projects.endPeriod}, ${projects.startPeriod}) desc nulls last`,
+      desc(projects.updatedAt),
+    );
   return limit ? query.limit(limit) : query;
 }
 

@@ -17,6 +17,8 @@ export type ProjectFormInitialValues = {
   slug: string;
   description: string;
   technologies: string;
+  startPeriod: string;
+  endPeriod: string;
   projectStatus: "in_progress" | "completed";
   publicationStatus: "draft" | "published";
   visibility: "private" | "public";
@@ -52,11 +54,73 @@ function FieldError({
   ) : null;
 }
 
+type PeriodPrecision = "month" | "year";
+type ProjectPeriodFieldName = "startPeriod" | "endPeriod";
+
+function ProjectPeriodField({
+  field,
+  label,
+  value,
+  precision,
+  onChange,
+  onPrecisionChange,
+  error,
+  errorProps,
+}: {
+  field: ProjectPeriodFieldName;
+  label: string;
+  value: string;
+  precision: PeriodPrecision;
+  onChange: (value: string) => void;
+  onPrecisionChange: (precision: PeriodPrecision) => void;
+  error?: string;
+  errorProps: {
+    "aria-invalid": boolean;
+    "aria-describedby": string | undefined;
+  };
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <label htmlFor={field} className="block text-sm font-medium">
+          {label}
+        </label>
+        <select
+          aria-label={`${label} precision`}
+          value={precision}
+          className="min-h-9 rounded-md border border-input bg-background px-2 text-sm"
+          onChange={(event) =>
+            onPrecisionChange(event.target.value as PeriodPrecision)
+          }
+        >
+          <option value="month">Month and year</option>
+          <option value="year">Year only</option>
+        </select>
+      </div>
+      <input
+        {...errorProps}
+        id={field}
+        name={field}
+        type={precision === "year" ? "number" : "month"}
+        min={precision === "year" ? 1000 : "1000-01"}
+        max={precision === "year" ? 9999 : undefined}
+        step={precision === "year" ? 1 : undefined}
+        value={value}
+        className={inputClassName}
+        onChange={(event) => onChange(event.target.value)}
+      />
+      <FieldError field={field} error={error} />
+    </div>
+  );
+}
+
 export const newProjectValues: ProjectFormInitialValues = {
   name: "",
   slug: "",
   description: "",
   technologies: "",
+  startPeriod: "",
+  endPeriod: "",
   projectStatus: "in_progress",
   publicationStatus: "draft",
   visibility: "private",
@@ -72,6 +136,12 @@ export function ProjectForm({
   hasCaseStudy = false,
 }: ProjectFormProps) {
   const [values, setValues] = useState(initialValues);
+  const [periodPrecisions, setPeriodPrecisions] = useState<
+    Record<ProjectPeriodFieldName, PeriodPrecision>
+  >({
+    startPeriod: initialValues.startPeriod.length === 4 ? "year" : "month",
+    endPeriod: initialValues.endPeriod.length === 4 ? "year" : "month",
+  });
   const [slugWasEdited, setSlugWasEdited] = useState(mode === "edit");
   const [state, formAction, pending] = useActionState(
     action,
@@ -89,6 +159,22 @@ export function ProjectForm({
 
   function updateValue(field: keyof ProjectFormInitialValues, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
+  }
+
+  function updatePeriodPrecision(
+    field: ProjectPeriodFieldName,
+    precision: PeriodPrecision,
+  ) {
+    setPeriodPrecisions((current) => ({ ...current, [field]: precision }));
+    setValues((current) => ({
+      ...current,
+      [field]:
+        precision === "year"
+          ? current[field].slice(0, 4)
+          : current[field].length === 4
+            ? ""
+            : current[field],
+    }));
   }
 
   function errorProps(field: ProjectFormField) {
@@ -184,6 +270,52 @@ export function ProjectForm({
             <FieldError
               field="description"
               error={state.errors?.description?.[0]}
+            />
+          </div>
+
+          <div className="space-y-3 sm:col-span-2">
+            <div>
+              <h2 className="text-sm font-medium">Work period (optional)</h2>
+              <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                Enter a month and year, a year only, or leave it empty when you
+                are unsure. In-progress projects display “Present”.
+              </p>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <ProjectPeriodField
+                field="startPeriod"
+                label="Started"
+                value={values.startPeriod}
+                precision={periodPrecisions.startPeriod}
+                onChange={(value) => updateValue("startPeriod", value)}
+                onPrecisionChange={(precision) =>
+                  updatePeriodPrecision("startPeriod", precision)
+                }
+                error={state.errors?.startPeriod?.[0]}
+                errorProps={errorProps("startPeriod")}
+              />
+              {values.projectStatus === "completed" ? (
+                <ProjectPeriodField
+                  field="endPeriod"
+                  label="Completed"
+                  value={values.endPeriod}
+                  precision={periodPrecisions.endPeriod}
+                  onChange={(value) => updateValue("endPeriod", value)}
+                  onPrecisionChange={(precision) =>
+                    updatePeriodPrecision("endPeriod", precision)
+                  }
+                  error={state.errors?.endPeriod?.[0]}
+                  errorProps={errorProps("endPeriod")}
+                />
+              ) : null}
+            </div>
+            <FieldError
+              field="endPeriod"
+              error={
+                values.projectStatus === "in_progress"
+                  ? state.errors?.endPeriod?.[0]
+                  : undefined
+              }
             />
           </div>
 

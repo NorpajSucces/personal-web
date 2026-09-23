@@ -64,6 +64,7 @@ Route:
 Purpose:
 
 - simple project listing
+- show the work period when it is known
 - show project status
 - show technologies
 - link to GitHub when available
@@ -71,6 +72,8 @@ Purpose:
 - link to project detail when applicable
 
 No search/filter system is required in V1.
+The catalog is ordered by the most recent known work period, with projects that
+have no work period shown afterward.
 
 Project detail route:
 

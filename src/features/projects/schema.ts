@@ -57,29 +57,72 @@ const optionalMediaPath = z.preprocess(
     }),
 );
 
-export const projectFormSchema = z.object({
-  name: requiredSingleLine,
-  slug: z
+const projectPeriodPattern = /^[1-9]\d{3}(?:-(?:0[1-9]|1[0-2]))?$/;
+
+const optionalProjectPeriod = z.preprocess(
+  (value) => value ?? "",
+  z
     .string()
-    .transform(normalizeProjectSlug)
-    .pipe(
-      z
-        .string()
-        .min(1, "Enter a slug.")
-        .regex(
-          /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-          "Use lowercase letters, numbers, and single hyphens only.",
-        ),
-    ),
-  description: requiredText,
-  technologies: z.string().transform(parseTechnologies),
-  projectStatus: z.enum(projectStatuses),
-  publicationStatus: z.enum(publicationStatuses),
-  visibility: z.enum(visibilityOptions),
-  githubUrl: optionalUrl,
-  liveDemoUrl: optionalUrl,
-  screenshotPath: optionalMediaPath,
-});
+    .trim()
+    .refine((value) => value === "" || projectPeriodPattern.test(value), {
+      message: "Enter a valid month and year, a year, or leave this empty.",
+    })
+    .transform((value) => value || null),
+);
+
+export const projectFormSchema = z
+  .object({
+    name: requiredSingleLine,
+    slug: z
+      .string()
+      .transform(normalizeProjectSlug)
+      .pipe(
+        z
+          .string()
+          .min(1, "Enter a slug.")
+          .regex(
+            /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+            "Use lowercase letters, numbers, and single hyphens only.",
+          ),
+      ),
+    description: requiredText,
+    technologies: z.string().transform(parseTechnologies),
+    startPeriod: optionalProjectPeriod,
+    endPeriod: optionalProjectPeriod,
+    projectStatus: z.enum(projectStatuses),
+    publicationStatus: z.enum(publicationStatuses),
+    visibility: z.enum(visibilityOptions),
+    githubUrl: optionalUrl,
+    liveDemoUrl: optionalUrl,
+    screenshotPath: optionalMediaPath,
+  })
+  .superRefine((values, context) => {
+    if (values.projectStatus === "in_progress" && values.endPeriod) {
+      context.addIssue({
+        code: "custom",
+        path: ["endPeriod"],
+        message: "Leave the end period empty while the project is in progress.",
+      });
+    }
+
+    if (!values.startPeriod || !values.endPeriod) return;
+    const [startYear, startMonth] = values.startPeriod.split("-").map(Number);
+    const [endYear, endMonth] = values.endPeriod.split("-").map(Number);
+    const isEarlier =
+      startYear > endYear ||
+      (startYear === endYear &&
+        startMonth !== undefined &&
+        endMonth !== undefined &&
+        startMonth > endMonth);
+
+    if (isEarlier) {
+      context.addIssue({
+        code: "custom",
+        path: ["endPeriod"],
+        message: "The end period cannot be earlier than the start period.",
+      });
+    }
+  });
 
 export type ProjectFormValues = z.infer<typeof projectFormSchema>;
 export type ProjectFormField = keyof z.input<typeof projectFormSchema>;
@@ -100,6 +143,8 @@ export function parseProjectFormData(formData: FormData) {
     slug: formData.get("slug"),
     description: formData.get("description"),
     technologies: formData.get("technologies"),
+    startPeriod: formData.get("startPeriod"),
+    endPeriod: formData.get("endPeriod"),
     projectStatus: formData.get("projectStatus"),
     publicationStatus: formData.get("publicationStatus"),
     visibility: formData.get("visibility"),

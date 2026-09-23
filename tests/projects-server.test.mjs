@@ -44,6 +44,8 @@ const projectRow = [
   null,
   null,
   ["Next.js"],
+  null,
+  null,
   "in_progress",
   "draft",
   "private",
@@ -103,6 +105,8 @@ function projectForm(overrides = {}) {
     slug: "new-project",
     description: "Project description",
     technologies: "Next.js\nTypeScript",
+    startPeriod: "",
+    endPeriod: "",
     projectStatus: "in_progress",
     publicationStatus: "draft",
     visibility: "private",
@@ -228,7 +232,10 @@ test("public list filters Published and Public in SQL before ordering and limiti
     query.query,
     /where \("projects"\."publication_status" = \$1 and "projects"\."visibility" = \$2\)/,
   );
-  assert.match(query.query, /order by "projects"\."updated_at" desc limit \$3/);
+  assert.match(
+    query.query,
+    /order by coalesce\("projects"\."end_period", "projects"\."start_period"\) desc nulls last, "projects"\."updated_at" desc limit \$3/,
+  );
   assert.deepEqual(query.params, ["published", "public", 3]);
 });
 

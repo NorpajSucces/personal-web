@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { projectStatusLabel } from "@/features/projects/project-card";
+import { formatProjectPeriod } from "@/features/projects/period";
 import type { ProjectSummary } from "@/features/projects/types";
 
 export function HomeProjectList({ projects }: { projects: ProjectSummary[] }) {
@@ -31,6 +32,7 @@ export function HomeProjectList({ projects }: { projects: ProjectSummary[] }) {
                 {projectStatusLabel(project.projectStatus)}
               </span>
             </div>
+            <HomeProjectPeriod project={project} />
             <p className="mt-3 whitespace-pre-line text-sm leading-6 wrap-anywhere text-muted-foreground">
               {project.description}
             </p>
@@ -56,4 +58,18 @@ export function HomeProjectList({ projects }: { projects: ProjectSummary[] }) {
       ))}
     </div>
   );
+}
+
+function HomeProjectPeriod({ project }: { project: ProjectSummary }) {
+  const period = formatProjectPeriod(
+    project.startPeriod,
+    project.endPeriod,
+    project.projectStatus,
+  );
+
+  return period ? (
+    <p className="mt-2 font-mono text-[0.6875rem] text-muted-foreground">
+      {period}
+    </p>
+  ) : null;
 }

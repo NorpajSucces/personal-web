@@ -280,9 +280,12 @@ No visitor analytics dashboard is required in V1.
 
 ## 13. Home Content Behavior
 
-Latest Projects on Home are selected automatically from the newest published
-and public Projects. Experience entries are ordered automatically by newest
-start date. Tech & Tools remains a small code-owned list rather than CMS data.
+Latest Projects on Home are selected automatically from published and public
+Projects with the most recent work periods. Completed projects use their end
+period; in-progress projects use their start period. Projects without a known
+period follow dated projects, and recently updated projects break date ties.
+Experience entries are ordered automatically by newest start date. Tech & Tools
+remains a small code-owned list rather than CMS data.
 
 There is no manual featured-content management in V1.
 

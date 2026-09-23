@@ -94,6 +94,8 @@ Project
 ├── githubUrl (optional)
 ├── liveDemoUrl (optional)
 ├── technologies[]
+├── startPeriod (optional: YYYY or YYYY-MM)
+├── endPeriod (optional: YYYY or YYYY-MM)
 ├── projectStatus
 │   ├── in_progress
 │   └── completed
@@ -110,6 +112,11 @@ Important distinction:
 - `publicationStatus` = state of the portfolio content.
 
 Project technologies remain a PostgreSQL text array in V1.
+
+Project work periods keep the precision known by the owner: use a year and
+month, a year only, or leave the period empty. In-progress projects have no end
+period; completed projects may have one. When both periods are present, the end
+cannot precede the start. Existing projects are not assigned guessed dates.
 
 Case Study is optional and uses Tiptap JSON when present.
 

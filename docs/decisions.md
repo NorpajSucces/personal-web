@@ -349,3 +349,14 @@ This file records important decisions and the reasoning behind them. Update it w
 **Decision:** Public queries only expose `published + public` content.
 
 **Reason:** Draft and private content must remain undiscoverable to visitors.
+
+---
+
+## DEC-050 — Project Work Periods
+
+**Decision:** Projects may store a start and end work period at month/year or
+year-only precision. Public project lists are ordered by the latest known work
+period, with undated projects after dated projects.
+
+**Reason:** Visitors can see when work happened and browse projects in a useful
+chronological order without inventing dates for older projects.

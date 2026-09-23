@@ -10,12 +10,15 @@ import {
   generateProjectSlug,
   normalizeProjectSlug,
 } from "../src/features/projects/slug.ts";
+import { formatProjectPeriod } from "../src/features/projects/period.ts";
 
 const validProject = {
   name: "  Personal   Website  ",
   slug: "personal-website",
   description: "A useful project.\n\nWith context.",
   technologies: "Next.js\nTypeScript, PostgreSQL",
+  startPeriod: "2024-09",
+  endPeriod: "",
   projectStatus: "in_progress",
   publicationStatus: "draft",
   visibility: "private",
@@ -29,7 +32,62 @@ test("a valid Project is normalized and accepted", () => {
     ...validProject,
     name: "Personal Website",
     technologies: ["Next.js", "TypeScript", "PostgreSQL"],
+    endPeriod: null,
   });
+});
+
+test("project periods preserve month or year precision and reject invalid ranges", () => {
+  const yearOnly = projectFormSchema.parse({
+    ...validProject,
+    startPeriod: "2022",
+    endPeriod: "2023",
+    projectStatus: "completed",
+  });
+  assert.equal(yearOnly.startPeriod, "2022");
+  assert.equal(yearOnly.endPeriod, "2023");
+
+  for (const value of ["2024-00", "2024-13", "24-09", "2024-9", "abcd"]) {
+    assert.equal(
+      projectFormSchema.safeParse({ ...validProject, startPeriod: value })
+        .success,
+      false,
+    );
+  }
+
+  const reversedRange = projectFormSchema.safeParse({
+    ...validProject,
+    projectStatus: "completed",
+    startPeriod: "2024-10",
+    endPeriod: "2024-09",
+  });
+  assert.equal(reversedRange.success, false);
+
+  const inProgressWithEnd = projectFormSchema.safeParse({
+    ...validProject,
+    endPeriod: "2025-01",
+  });
+  assert.equal(inProgressWithEnd.success, false);
+});
+
+test("project period labels stay compact for one month and clear for ranges", () => {
+  assert.equal(
+    formatProjectPeriod("2024-09", "2024-09", "completed"),
+    "Sep 2024",
+  );
+  assert.equal(
+    formatProjectPeriod("2024-09", "2024-11", "completed"),
+    "Sep–Nov 2024",
+  );
+  assert.equal(
+    formatProjectPeriod("2024-12", "2025-02", "completed"),
+    "Dec 2024–Feb 2025",
+  );
+  assert.equal(formatProjectPeriod("2022", "2024", "completed"), "2022–2024");
+  assert.equal(
+    formatProjectPeriod("2024", null, "in_progress"),
+    "2024–Present",
+  );
+  assert.equal(formatProjectPeriod(null, null, "completed"), null);
 });
 
 test("new slugs are generated predictably from Project names", () => {

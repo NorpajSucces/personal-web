@@ -8,6 +8,8 @@ export type ProjectSummary = Pick<
   | "slug"
   | "description"
   | "technologies"
+  | "startPeriod"
+  | "endPeriod"
   | "projectStatus"
   | "publicationStatus"
   | "visibility"

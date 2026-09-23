@@ -38,6 +38,8 @@ export default async function EditProjectPage({
           slug: project.slug,
           description: project.description,
           technologies: project.technologies.join("\n"),
+          startPeriod: project.startPeriod ?? "",
+          endPeriod: project.endPeriod ?? "",
           projectStatus: project.projectStatus,
           publicationStatus: project.publicationStatus,
           visibility: project.visibility,

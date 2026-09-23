@@ -6,6 +6,7 @@ import { MediaImage } from "@/features/media/media-image";
 
 import { parseCaseStudy } from "./case-study";
 import { projectStatusLabel } from "./project-card";
+import { formatProjectPeriod } from "./period";
 import type { Project } from "./types";
 
 export function ProjectDetail({
@@ -16,6 +17,11 @@ export function ProjectDetail({
   preview?: boolean;
 }) {
   const blocks = parseCaseStudy(project.caseStudy);
+  const period = formatProjectPeriod(
+    project.startPeriod,
+    project.endPeriod,
+    project.projectStatus,
+  );
   return (
     <Container>
       <article className="mx-auto max-w-[var(--container-reading)] py-[clamp(4rem,10vw,8rem)]">
@@ -30,9 +36,14 @@ export function ProjectDetail({
         >
           ← {preview ? "Back to Projects admin" : "All projects"}
         </Link>
-        <p className="mt-7 text-xs font-semibold tracking-[0.18em] text-primary uppercase">
-          {projectStatusLabel(project.projectStatus)}
-        </p>
+        <div className="mt-7 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <p className="text-xs font-semibold tracking-[0.18em] text-primary uppercase">
+            {projectStatusLabel(project.projectStatus)}
+          </p>
+          {period ? (
+            <p className="font-mono text-xs text-muted-foreground">{period}</p>
+          ) : null}
+        </div>
         <h1 className="mt-4 font-serif text-[clamp(3rem,8vw,5.5rem)] leading-[0.95] font-medium tracking-[-0.04em] wrap-anywhere text-balance">
           {project.name}
         </h1>
